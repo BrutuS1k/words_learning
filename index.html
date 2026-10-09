@@ -17,11 +17,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Noto+Sans:wght@400;600&display=swap">
 <style>
 :root{
-  --bg:#E0E5EC; --hi:#FFFFFF; --lo:#A3B1C6;
+  --bg:#E0E5EC; --hi:#FFFFFF; --lo:#A3B1C6; --field:#F6F8FB; --off:#D5DBE3;
   --ink:#3D4852; --mute:#4F5D6B; --accent:#2F4FC4; --warm:#A8410A; --danger:#B3261E;
   --font:'Onest','Noto Sans',system-ui,sans-serif; --ipa:'Noto Sans','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px}
 body{overscroll-behavior:none}
 button,input{font-family:inherit;color:inherit}
@@ -62,7 +63,9 @@ button:disabled{opacity:.55;cursor:default}
 .panel .btns .ok{background:var(--accent);color:#fff}
 .empty{margin:24px 0;text-align:center;color:var(--mute)}
 
-input[type=text]{width:100%;height:56px;padding:0 20px;border:0;border-radius:18px;background:var(--bg);font-size:18px;outline:none;box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
+input[type=text]{width:100%;height:56px;padding:0 20px;border:0;border-radius:18px;background:var(--field);font-size:18px;outline:none;box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
+input[type=text]:disabled{background:var(--off);color:#5F6C79;box-shadow:none;cursor:not-allowed}
+input[type=text]:disabled::placeholder{color:#5F6C79}
 input[type=text]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 input::placeholder{color:#6A7886}
 .field{display:flex;flex-direction:column;gap:10px}
@@ -169,11 +172,15 @@ const langById = (id) => S.langs.find((l) => l.id === id);
 const wordsOf = (id) => S.words.filter((w) => w.langId === id);
 
 /* ---------- IPA -> simplified Russian ---------- */
-const M2 = { 'tʃ': 'ч', 'dʒ': 'дж', 'ts': 'ц', 'dz': 'дз' };
-const CONS = { p:'п',b:'б',t:'т',d:'д',k:'к',g:'г','ɡ':'г',f:'ф',v:'в',s:'с',z:'з','ʃ':'ш','ʒ':'ж',h:'х',x:'х','χ':'х','ʁ':'р',r:'р','ɾ':'р','ɹ':'р',l:'л','ɫ':'л',m:'м',n:'н','ɲ':'нь','ŋ':'нг',j:'й',w:'в','θ':'с','ð':'з','ç':'х','ɥ':'ю','ɕ':'щ','ʎ':'ль',c:'к',q:'к','ɟ':'дь' };
+const M2 = { 'tʃ': 'ч', 'dʒ': 'дж', 'ts': 'ц', 'dz': 'дз', 'tɕ': 'ч', 'dʑ': 'дж' };
+const CONS = { 'ʋ':'в','ʑ':'зь', p:'п',b:'б',t:'т',d:'д',k:'к',g:'г','ɡ':'г',f:'ф',v:'в',s:'с',z:'з','ʃ':'ш','ʒ':'ж',h:'х',x:'х','χ':'х','ʁ':'р',r:'р','ɾ':'р','ɹ':'р',l:'л','ɫ':'л',m:'м',n:'н','ɲ':'нь','ŋ':'нг',j:'й',w:'в','θ':'с','ð':'з','ç':'х','ɥ':'ю','ɕ':'щ','ʎ':'ль',c:'к',q:'к','ɟ':'дь' };
 const VOW = { a:'а','ɑ':'а','ɐ':'а','æ':'э','ɛ':'э',e:'э','ə':'е','ɜ':'ё','ɪ':'и',i:'и','ɔ':'о',o:'о','ʊ':'у',u:'у','ʌ':'а','ɒ':'о',y:'ю','ø':'ё','œ':'ё','ɨ':'ы','ɯ':'у','ʏ':'ю','ɚ':'ер','ɝ':'ёр','ɵ':'о','ɘ':'е','ɤ':'о','ɞ':'ё' };
 function ipaToRu(ipa) {
-  const s = String(ipa || '').replace(/[\[\]\/()ˈˌ.‿‖|ːˑʰʲʷ̯̩͜͡ʰ]/g, '');
+  // drop tone/length/tie marks (Serbian IPA is full of them), keep the nasal tilde and "ç"
+  let s = String(ipa || '').replace(/ç/g, '').normalize('NFD')
+    .replace(/[̀-̂̄-ͯ]/g, '')
+    .replace(//g, 'ç')
+    .replace(/[\[\]\/()ˈˌ.‿‖|ːˑʰʲʷʰ]/g, '');
   let out = '';
   for (let i = 0; i < s.length; i++) {
     const two = s.slice(i, i + 2);
@@ -197,14 +204,95 @@ async function jget(url, ms) {
     return await r.json();
   } finally { clearTimeout(t); }
 }
+/* ---------- Serbian: Latin <-> Cyrillic, spelling-based Russian reading ---------- */
+const CYR2LAT = { 'а':'a','б':'b','в':'v','г':'g','д':'d','ђ':'đ','е':'e','ж':'ž','з':'z','и':'i','ј':'j','к':'k','л':'l','љ':'lj','м':'m','н':'n','њ':'nj','о':'o','п':'p','р':'r','с':'s','т':'t','ћ':'ć','у':'u','ф':'f','х':'h','ц':'c','ч':'č','џ':'dž','ш':'š' };
+const LAT2CYR = { 'a':'а','b':'б','c':'ц','č':'ч','ć':'ћ','d':'д','đ':'ђ','e':'е','f':'ф','g':'г','h':'х','i':'и','j':'ј','k':'к','l':'л','m':'м','n':'н','o':'о','p':'п','r':'р','s':'с','š':'ш','t':'т','u':'у','v':'в','z':'з','ž':'ж' };
+const hasCyr = (s) => /[Ѐ-ӿ]/.test(s);
+function srToCyr(s) {
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const two = s.slice(i, i + 2).toLowerCase();
+    let r;
+    if (two === 'lj') { r = 'љ'; i++; } else if (two === 'nj') { r = 'њ'; i++; } else if (two === 'dž') { r = 'џ'; i++; }
+    else r = LAT2CYR[s[i].toLowerCase()] || s[i];
+    out += (s[i] !== s[i].toLowerCase()) ? r.toUpperCase() : r;
+  }
+  return out;
+}
+function srToLat(s) {
+  let out = '';
+  for (const ch of s) {
+    const r = CYR2LAT[ch.toLowerCase()];
+    out += r ? ((ch !== ch.toLowerCase()) ? r.charAt(0).toUpperCase() + r.slice(1) : r) : ch;
+  }
+  return out;
+}
+// Serbian spelling is phonetic, so a Russian reading can be built straight from the word
+function srReadingRu(word) {
+  const cyr = srToCyr(word.toLowerCase());
+  const map = { 'ј':'й','љ':'ль','њ':'нь','ћ':'ч','ђ':'дж','џ':'дж','е':'э' };
+  let out = '';
+  for (const ch of cyr) out += map[ch] || ch;
+  return out;
+}
+const isSr = (code) => code === 'sr';
+
 // Suggestions while typing: Wiktionary of the studied language
 async function fetchSuggest(q, code) {
-  const host = (code || 'en') + '.wiktionary.org';
-  const d = await jget('https://' + host + '/w/api.php?action=opensearch&format=json&origin=*&limit=6&namespace=0&search=' + encodeURIComponent(q), 6000);
-  return (d[1] || []).filter((t) => t.toLowerCase() !== q.toLowerCase() || true);
+  const os = (host, term) => jget('https://' + host + '/w/api.php?action=opensearch&format=json&origin=*&limit=8&namespace=0&search=' + encodeURIComponent(term), 6000).then((d) => d[1] || []);
+  if (isSr(code)) {
+    // sr.wiktionary is written in Cyrillic, sh.wiktionary in Latin; try both spellings and merge
+    const res = await Promise.allSettled([os('sr.wiktionary.org', srToCyr(q)), os('sh.wiktionary.org', srToLat(q))]);
+    let list = [];
+    res.forEach((r) => { if (r.status === 'fulfilled') list = list.concat(r.value); });
+    if (list.length < 3) {
+      try { list = list.concat(await os('en.wiktionary.org', hasCyr(q) ? q : srToCyr(q))); } catch (e) {}
+    }
+    if (!list.length && res.every((r) => r.status === 'rejected')) throw new Error('offline');
+    const seen = new Set();
+    return list.filter((t) => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+  }
+  if (code === 'en') {
+    // Datamuse completes English words by prefix; Wiktionary is the fallback
+    try {
+      const d = await jget('https://api.datamuse.com/sug?max=8&s=' + encodeURIComponent(q), 6000);
+      const list = d.map((x) => x.word).filter(Boolean);
+      if (list.length) return list;
+    } catch (e) { /* fall through */ }
+  }
+  return os((code || 'en') + '.wiktionary.org', q);
 }
-// Transcription: IPA from the English Wiktionary entry, language section
-async function fetchIPA(word, eng) {
+// English transcription fallback: Free Dictionary API
+async function fetchIPADict(word) {
+  try {
+    const d = await jget('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word), 8000);
+    const e = Array.isArray(d) ? d[0] : null;
+    if (!e) return '';
+    const p = (e.phonetics || []).find((x) => x.text);
+    return (p && p.text) || e.phonetic || '';
+  } catch (err) {
+    if (/HTTP 404/.test(String(err.message))) return ''; // word not in the dictionary: not a connection problem
+    throw err;
+  }
+}
+// Transcription: IPA from the English Wiktionary entry, language section.
+// Throws only when every source failed to answer (no connection); returns '' when the word simply has none.
+async function fetchIPA(word, eng, code) {
+  // Serbian entries exist in both scripts: try the typed form first, then the other one
+  const forms = eng === 'Serbo-Croatian' ? [word, hasCyr(word) ? srToLat(word) : srToCyr(word)] : [word];
+  let failed = 0, total = 0, last;
+  for (const w of forms) {
+    total++;
+    try { const r = await fetchIPAOne(w, eng); if (r) return r; } catch (e) { failed++; last = e; }
+  }
+  if (code === 'en') {
+    total++;
+    try { const r = await fetchIPADict(word); if (r) return r; } catch (e) { failed++; last = e; }
+  }
+  if (failed === total) throw last;
+  return '';
+}
+async function fetchIPAOne(word, eng) {
   const d = await jget('https://en.wiktionary.org/w/api.php?action=parse&prop=text&format=json&formatversion=2&redirects=1&origin=*&page=' + encodeURIComponent(word), 12000);
   const html = d && d.parse && d.parse.text;
   if (!html) return '';
@@ -223,11 +311,21 @@ async function fetchIPA(word, eng) {
   return el ? el.textContent.trim() : '';
 }
 // Translation to Russian: MyMemory
-async function fetchTranslation(word, code) {
-  const d = await jget('https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent(code + '|ru') + '&q=' + encodeURIComponent(word), 9000);
+async function translateOnce(q, code) {
+  const d = await jget('https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent(code + '|ru') + '&q=' + encodeURIComponent(q), 9000);
   const t = d && d.responseData && d.responseData.translatedText;
   if (!t || /MYMEMORY WARNING|INVALID/i.test(t)) return '';
-  return t.trim().toLowerCase();
+  const r = t.trim().toLowerCase();
+  return r === q.trim().toLowerCase() ? '' : r; // an unchanged echo means "not translated"
+}
+async function fetchTranslation(word, code) {
+  if (isSr(code)) {
+    // MyMemory knows Serbian in Cyrillic; fall back to the Latin spelling
+    let r = '';
+    try { r = await translateOnce(srToCyr(word), code); } catch (e) { if (hasCyr(word)) throw e; }
+    return r || translateOnce(srToLat(word), code);
+  }
+  return translateOnce(word, code);
 }
 
 /* ---------- UI state ---------- */
@@ -285,7 +383,7 @@ function vModes() {
   return '<main class="screen">' + topBar() +
     '<header style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">' + esc(l.name) + ' · ' + wordsText(n) + '</span><h1>Что делаем?</h1></header>' +
     '<div class="modes">' +
-    '<button class="mode primary" data-act="to-add"><span class="ic">' + I.plus + '</span><span><span class="t">Добавить слово</span><span class="d">Подсказки, транскрипция, перевод</span></span></button>' +
+    '<button class="mode primary" data-act="to-add"><span class="ic">' + I.plus + '</span><span><span class="t">Добавить новое слово</span><span class="d">Подсказки, транскрипция, перевод</span></span></button>' +
     '<div class="label group-label">Учить карточки</div>' +
     '<button class="mode" data-act="start" data-mode="ru"><span class="ic">RU</span><span><span class="t">Русские карточки</span><span class="d">Видите русское слово, вспоминаете перевод</span></span></button>' +
     '<button class="mode" data-act="start" data-mode="fl"><span class="ic">' + esc(l.badge) + '</span><span><span class="t">Карточки: ' + esc(l.name.toLowerCase()) + '</span><span class="d">Видите слово, вспоминаете значение</span></span></button>' +
@@ -303,7 +401,7 @@ function vAdd() {
     '<div id="sugg" class="sugg" hidden></div></div>' +
     '<button class="big-btn ghost" id="find" data-act="find" style="min-height:52px;font-size:16px">Найти транскрипцию и перевод</button>' +
     '<div id="status" class="status" aria-live="polite">' + (l.code ? '' : 'Для этого языка нет подсказок. Заполните поля вручную.') + '</div>' +
-    '<div class="field"><label class="label" for="f-ipa">Транскрипция</label><input id="f-ipa" class="ipa" type="text" autocomplete="off" placeholder="[bɔ̃.ʒuʁ]"></div>' +
+    '<div class="field"><label class="label" id="l-ipa" for="f-ipa">Транскрипция</label><input id="f-ipa" class="ipa" type="text" autocomplete="off" placeholder="[bɔ̃.ʒuʁ]"></div>' +
     '<div class="field"><label class="label" for="f-say">Произношение по-русски</label><input id="f-say" type="text" autocomplete="off" placeholder="бонжур"></div>' +
     '<div class="field"><label class="label" for="f-ru">Перевод</label><input id="f-ru" type="text" autocomplete="off" placeholder="здравствуйте"></div>' +
     '</div>' +
@@ -380,11 +478,23 @@ function nextCard(afterRemoval) {
 
 /* ---------- add word ---------- */
 let suggTok = 0, suggTimer = null, sayDirty = false;
+const OFFLINE_MSG = 'Нет связи со словарём. Транскрипцию добавить нельзя. Заполните перевод и произношение.';
+function setOffline(off) {
+  const i = $('#f-ipa'); if (!i) return;
+  ui.add = ui.add || {}; ui.add.offline = off;
+  i.disabled = off;
+  if (off) i.value = '';
+  i.placeholder = off ? 'Недоступно' : '[bɔ̃.ʒuʁ]';
+  $('#l-ipa').textContent = off ? 'Транскрипция · недоступна без связи' : 'Транскрипция';
+}
+window.addEventListener('offline', () => { if (ui.view === 'add' && $('#f-ipa') && langById(ui.langId).code) { setOffline(true); setStatus(OFFLINE_MSG, true); } });
+window.addEventListener('online', () => { if (ui.view === 'add' && $('#f-ipa')) { setOffline(false); setStatus(''); } });
 function setStatus(msg, err) { const s = $('#status'); if (s) { s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); } }
 function bindAdd() {
-  sayDirty = false; suggTok++;
+  sayDirty = false; suggTok++; ui.add = { offline: false };
   const l = langById(ui.langId);
   const w = $('#w');
+  if (!navigator.onLine && l.code) { setOffline(true); setStatus(OFFLINE_MSG, true); }
   w.addEventListener('input', () => {
     clearTimeout(suggTimer);
     const q = w.value.trim();
@@ -395,13 +505,19 @@ function bindAdd() {
       try {
         const list = await fetchSuggest(q, l.code);
         if (tok !== suggTok || !$('#sugg')) return;
+        if (ui.add && ui.add.offline) { setOffline(false); setStatus(''); }
         if (!list.length) { box.hidden = true; return; }
         box.innerHTML = list.map((t, i) => {
           const pre = t.toLowerCase().startsWith(q.toLowerCase()) ? q.length : 0;
           return '<button data-act="pick" data-w="' + esc(t) + '"><b>' + esc(t.slice(0, pre)) + '</b>' + esc(t.slice(pre)) + '</button>';
         }).join('');
         box.hidden = false;
-      } catch (e) { if (tok === suggTok && $('#sugg')) { box.hidden = true; } }
+      } catch (e) {
+        if (tok === suggTok && $('#sugg')) {
+          box.hidden = true;
+          if (l.code) { setOffline(true); setStatus(OFFLINE_MSG, true); }
+        }
+      }
     }, 250);
   });
   w.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); lookup(); } });
@@ -414,6 +530,7 @@ async function lookup() {
   if (!word) { setStatus('Введите слово.', true); return; }
   suggTok++; $('#sugg').hidden = true;
   if (!l.code) { setStatus('Для этого языка нет подсказок. Заполните поля вручную.', true); return; }
+  if (!navigator.onLine) { setOffline(true); setStatus(OFFLINE_MSG, true); return; }
   const btn = $('#find'); btn.disabled = true;
   setStatus('Ищу транскрипцию и перевод…');
   const [ipa, tr] = await Promise.allSettled([fetchIPA(word, l.eng), fetchTranslation(word, l.code)]);
@@ -423,11 +540,16 @@ async function lookup() {
   if (ipa.status === 'fulfilled' && ipa.value) {
     $('#f-ipa').value = ipa.value;
     if (!sayDirty) $('#f-say').value = ipaToRu(ipa.value);
-  } else miss.push('транскрипцию');
+  } else {
+    miss.push('транскрипцию');
+    // Serbian is spelled as it sounds: the reading can come from the word itself
+    if (isSr(l.code) && !sayDirty) $('#f-say').value = srReadingRu(word);
+  }
   if (tr.status === 'fulfilled' && tr.value) $('#f-ru').value = tr.value;
   else miss.push('перевод');
+  if (ipa.status === 'rejected' && tr.status === 'rejected') { setOffline(true); setStatus(OFFLINE_MSG, true); return; }
+  if (ui.add && ui.add.offline) setOffline(false);
   if (!miss.length) setStatus('Готово. Проверьте и сохраните.');
-  else if (miss.length === 2 && ipa.status === 'rejected' && tr.status === 'rejected') setStatus('Нет связи со словарями. Заполните поля вручную.', true);
   else setStatus('Не нашёл ' + miss.join(' и ') + '. Допишите вручную.', true);
 }
 function saveWord() {
@@ -438,9 +560,9 @@ function saveWord() {
   if (wordsOf(l.id).some((x) => x.word.toLowerCase() === word.toLowerCase())) { setStatus('Это слово уже есть в словаре.', true); return; }
   S.words.push({ id: S.nextId++, langId: l.id, word, ipa: $('#f-ipa').value.trim(), say: $('#f-say').value.trim(), ru, shown: 0, learned: false });
   save();
-  render();
   toast('Слово добавлено');
-  $('#w').focus();
+  if (history.state && history.state.v === 'add') history.back();
+  else go('modes', false);
 }
 
 /* ---------- events ---------- */
