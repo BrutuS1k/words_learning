@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E0E5EC">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Слова">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Слова</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Noto+Sans:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#E0E5EC; --hi:#FFFFFF; --lo:#A3B1C6;
+  --ink:#3D4852; --mute:#4F5D6B; --accent:#2F4FC4; --warm:#A8410A; --danger:#B3261E;
+  --font:'Onest','Noto Sans',system-ui,sans-serif; --ipa:'Noto Sans','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px}
+body{overscroll-behavior:none}
+button,input{font-family:inherit;color:inherit}
+button{cursor:pointer;border:0;background:var(--bg)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+#app{max-width:480px;height:100%;margin:0 auto}
+.screen{height:100%;display:flex;flex-direction:column;gap:22px;padding:max(env(safe-area-inset-top),28px) 24px max(env(safe-area-inset-bottom),24px)}
+h1{margin:0;font-size:32px;line-height:1.15;font-weight:700;text-wrap:balance}
+.sub{margin:0;color:var(--mute)}
+.eyebrow{font-size:14px;font-weight:600;color:var(--accent)}
+.label{font-size:14px;font-weight:600;color:var(--mute)}
+
+.raised{box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.raised-s{box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.raised-l{box-shadow:12px 12px 22px var(--lo),-12px -12px 22px var(--hi)}
+.inset{box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
+button:active:not(:disabled){box-shadow:inset 5px 5px 9px var(--lo),inset -5px -5px 9px var(--hi)}
+button:disabled{opacity:.55;cursor:default}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.icon-btn{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.pill-btn{min-height:48px;padding:0 24px;border-radius:24px;font-weight:600;font-size:16px;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.big-btn{min-height:60px;border-radius:24px;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.big-btn.primary{background:var(--accent);color:#fff}
+.big-btn.ghost{color:var(--accent)}
+
+.list{display:flex;flex-direction:column;gap:22px;flex:1;min-height:0;overflow-y:auto;padding:12px 14px 20px;margin:-12px -14px -20px}
+.row{display:flex;align-items:center;gap:6px;min-height:80px;padding:12px 10px 12px 16px;border-radius:24px;background:var(--bg);flex-shrink:0;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.row-main{flex:1;min-width:0;display:flex;align-items:center;gap:16px;text-align:left;padding:0;background:transparent;box-shadow:none!important}
+.badge{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;box-shadow:5px 5px 9px var(--lo),-5px -5px 9px var(--hi)}
+.row-title{display:block;font-size:18px;font-weight:600;overflow-wrap:anywhere}
+.row-sub{display:block;font-size:14px;color:var(--mute)}
+.small-danger{min-height:44px;padding:0 14px;border-radius:14px;background:var(--danger);color:#fff;font-weight:600;font-size:14px;box-shadow:4px 4px 8px var(--lo),-4px -4px 8px var(--hi)}
+.small-plain{min-height:44px;padding:0 10px;background:transparent;color:var(--mute);font-weight:600;font-size:14px;box-shadow:none!important}
+.panel{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:24px;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.panel .btns{display:flex;gap:16px}
+.panel .btns button{flex:1;min-height:48px;border-radius:16px;font-weight:600;font-size:16px;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.panel .btns .ok{background:var(--accent);color:#fff}
+.empty{margin:24px 0;text-align:center;color:var(--mute)}
+
+input[type=text]{width:100%;height:56px;padding:0 20px;border:0;border-radius:18px;background:var(--bg);font-size:18px;outline:none;box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
+input[type=text]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+input::placeholder{color:#6A7886}
+.field{display:flex;flex-direction:column;gap:10px}
+.scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:6px 14px 20px;margin:-6px -14px -20px}
+.sugg{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;box-shadow:6px 6px 12px var(--lo),-6px -6px 12px var(--hi)}
+.sugg button{min-height:48px;padding:0 20px;text-align:left;font-size:17px;border-radius:0;display:flex;align-items:baseline;gap:0}
+.sugg button+button{border-top:1px solid rgba(163,177,198,.35)}
+.sugg b{font-weight:700}
+.status{min-height:22px;font-size:14px;color:var(--mute)}
+.status.err{color:var(--danger)}
+.ipa{font-family:var(--ipa)}
+
+.modes{display:flex;flex-direction:column;gap:24px;flex:1}
+.mode{display:flex;align-items:center;gap:16px;min-height:100px;padding:16px 20px;border-radius:28px;text-align:left;width:100%;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.mode.primary{background:var(--accent);color:#fff}
+.mode .t{display:block;font-size:20px;font-weight:600}
+.mode .d{display:block;font-size:14px;color:var(--mute)}
+.mode.primary .d{color:#fff}
+.mode .ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:15px;color:var(--accent);box-shadow:5px 5px 9px var(--lo),-5px -5px 9px var(--hi)}
+.mode.primary .ic{background:rgba(0,0,0,.16);color:#fff;box-shadow:inset 3px 3px 6px rgba(0,0,0,.25),inset -3px -3px 6px rgba(255,255,255,.18)}
+.group-label{margin:8px 0 -8px 4px}
+
+.counter{align-self:center;padding:10px 20px;border-radius:20px;font-size:15px;font-weight:600;color:var(--mute);box-shadow:inset 4px 4px 8px var(--lo),inset -4px -4px 8px var(--hi)}
+.flip{flex:1;min-height:0;margin:4px 4px 0;padding:32px 24px;border-radius:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;box-shadow:12px 12px 22px var(--lo),-12px -12px 22px var(--hi)}
+.flip .big{font-size:44px;line-height:1.1;font-weight:700;overflow-wrap:anywhere}
+.flip .big.long{font-size:32px}
+.flip .tr{font-size:22px;color:var(--mute)}
+.flip .say{font-size:24px;font-weight:600;color:var(--warm)}
+.done{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.done .ring{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:700;line-height:1;box-shadow:inset 9px 9px 16px var(--lo),inset -9px -9px 16px var(--hi)}
+.stack{display:flex;flex-direction:column;gap:20px}
+
+.toast{position:fixed;left:50%;bottom:max(env(safe-area-inset-bottom),24px);transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 20px;border-radius:18px;background:var(--bg);font-weight:600;box-shadow:6px 6px 12px var(--lo),-6px -6px 12px var(--hi);transition:opacity .2s,transform .2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+/* ---------- helpers ---------- */
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function plural(n, one, few, many) {
+  const a = n % 10, b = n % 100;
+  return (a === 1 && b !== 11) ? one : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? few : many;
+}
+const wordsText = (n) => n + ' ' + plural(n, 'слово', 'слова', 'слов');
+function shuffle(a) {
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- icons ---------- */
+const I = {
+  back: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+  plus: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+};
+
+/* ---------- known languages (for external dictionaries) ---------- */
+const KNOWN = {
+  'английский':['en','English'],'французский':['fr','French'],'немецкий':['de','German'],'испанский':['es','Spanish'],
+  'итальянский':['it','Italian'],'португальский':['pt','Portuguese'],'нидерландский':['nl','Dutch'],'голландский':['nl','Dutch'],
+  'польский':['pl','Polish'],'чешский':['cs','Czech'],'шведский':['sv','Swedish'],'норвежский':['no','Norwegian'],
+  'датский':['da','Danish'],'финский':['fi','Finnish'],'турецкий':['tr','Turkish'],'греческий':['el','Greek'],
+  'японский':['ja','Japanese'],'китайский':['zh','Chinese'],'корейский':['ko','Korean'],'венгерский':['hu','Hungarian'],
+  'румынский':['ro','Romanian'],'украинский':['uk','Ukrainian'],'латинский':['la','Latin'],'арабский':['ar','Arabic'],
+  'иврит':['he','Hebrew'],'хинди':['hi','Hindi'],'грузинский':['ka','Georgian'],'сербский':['sr','Serbo-Croatian'],
+  'болгарский':['bg','Bulgarian'],'хорватский':['hr','Serbo-Croatian'],'вьетнамский':['vi','Vietnamese'],'тайский':['th','Thai'],
+  'индонезийский':['id','Indonesian'],'армянский':['hy','Armenian'],'литовский':['lt','Lithuanian'],'латышский':['lv','Latvian'],
+  'эстонский':['et','Estonian'],'словацкий':['sk','Slovak'],'словенский':['sl','Slovene'],'персидский':['fa','Persian']
+};
+function langInfo(name) {
+  const n = name.trim().toLowerCase();
+  if (KNOWN[n]) return KNOWN[n];
+  const stem = n.slice(0, 6);
+  if (stem.length >= 5) { for (const k in KNOWN) if (k.slice(0, 6) === stem) return KNOWN[k]; }
+  return null;
+}
+
+/* ---------- storage ---------- */
+const KEY = 'words-app-v1';
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.langs) && Array.isArray(d.words)) return d; }
+  } catch (e) {}
+  return { langs: [], words: [], nextId: 1 };
+}
+let S = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('Не удалось сохранить данные'); } }
+const COLORS = ['#2F4FC4', '#3D4852', '#A8410A', '#0F766E', '#7A3E9D'];
+const langById = (id) => S.langs.find((l) => l.id === id);
+const wordsOf = (id) => S.words.filter((w) => w.langId === id);
+
+/* ---------- IPA -> simplified Russian ---------- */
+const M2 = { 'tʃ': 'ч', 'dʒ': 'дж', 'ts': 'ц', 'dz': 'дз' };
+const CONS = { p:'п',b:'б',t:'т',d:'д',k:'к',g:'г','ɡ':'г',f:'ф',v:'в',s:'с',z:'з','ʃ':'ш','ʒ':'ж',h:'х',x:'х','χ':'х','ʁ':'р',r:'р','ɾ':'р','ɹ':'р',l:'л','ɫ':'л',m:'м',n:'н','ɲ':'нь','ŋ':'нг',j:'й',w:'в','θ':'с','ð':'з','ç':'х','ɥ':'ю','ɕ':'щ','ʎ':'ль',c:'к',q:'к','ɟ':'дь' };
+const VOW = { a:'а','ɑ':'а','ɐ':'а','æ':'э','ɛ':'э',e:'э','ə':'е','ɜ':'ё','ɪ':'и',i:'и','ɔ':'о',o:'о','ʊ':'у',u:'у','ʌ':'а','ɒ':'о',y:'ю','ø':'ё','œ':'ё','ɨ':'ы','ɯ':'у','ʏ':'ю','ɚ':'ер','ɝ':'ёр','ɵ':'о','ɘ':'е','ɤ':'о','ɞ':'ё' };
+function ipaToRu(ipa) {
+  const s = String(ipa || '').replace(/[\[\]\/()ˈˌ.‿‖|ːˑʰʲʷ̯̩͜͡ʰ]/g, '');
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const two = s.slice(i, i + 2);
+    if (M2[two]) { out += M2[two]; i++; continue; }
+    const c = s[i];
+    if (VOW[c]) {
+      out += VOW[c];
+      if (s[i + 1] === '̃') { out += 'н'; i++; }
+    } else if (CONS[c]) out += CONS[c];
+    else if (c === ' ' || c === '-') out += c;
+  }
+  return out.trim();
+}
+
+/* ---------- external sources ---------- */
+async function jget(url, ms) {
+  const c = new AbortController(); const t = setTimeout(() => c.abort(), ms || 9000);
+  try {
+    const r = await fetch(url, { signal: c.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+// Suggestions while typing: Wiktionary of the studied language
+async function fetchSuggest(q, code) {
+  const host = (code || 'en') + '.wiktionary.org';
+  const d = await jget('https://' + host + '/w/api.php?action=opensearch&format=json&origin=*&limit=6&namespace=0&search=' + encodeURIComponent(q), 6000);
+  return (d[1] || []).filter((t) => t.toLowerCase() !== q.toLowerCase() || true);
+}
+// Transcription: IPA from the English Wiktionary entry, language section
+async function fetchIPA(word, eng) {
+  const d = await jget('https://en.wiktionary.org/w/api.php?action=parse&prop=text&format=json&formatversion=2&redirects=1&origin=*&page=' + encodeURIComponent(word), 12000);
+  const html = d && d.parse && d.parse.text;
+  if (!html) return '';
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const id = eng.replace(/ /g, '_');
+  const h = doc.getElementById(id);
+  let el = null;
+  if (h) {
+    let node = h.closest('.mw-heading') || h;
+    for (node = node.nextElementSibling; node; node = node.nextElementSibling) {
+      if (node.matches('h2, .mw-heading2, .mw-heading.mw-heading2')) break;
+      el = node.matches('.IPA') ? node : node.querySelector('.IPA');
+      if (el) break;
+    }
+  }
+  return el ? el.textContent.trim() : '';
+}
+// Translation to Russian: MyMemory
+async function fetchTranslation(word, code) {
+  const d = await jget('https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent(code + '|ru') + '&q=' + encodeURIComponent(word), 9000);
+  const t = d && d.responseData && d.responseData.translatedText;
+  if (!t || /MYMEMORY WARNING|INVALID/i.test(t)) return '';
+  return t.trim().toLowerCase();
+}
+
+/* ---------- UI state ---------- */
+const ui = { view: 'langs', langId: null, adding: false, draft: '', confirmId: null, session: null, add: null };
+const app = $('#app');
+
+function go(view, push) {
+  ui.view = view;
+  if (push !== false) { try { history.pushState({ v: view }, ''); } catch (e) {} }
+  render();
+}
+window.addEventListener('popstate', (e) => {
+  const v = (e.state && e.state.v) || 'langs';
+  ui.view = (v !== 'langs' && ui.langId == null) ? 'langs' : v;
+  render();
+});
+try { history.replaceState({ v: 'langs' }, ''); } catch (e) {}
+
+/* ---------- views ---------- */
+function topBar(right) {
+  return '<div class="top"><button class="icon-btn" data-act="back" aria-label="Назад">' + I.back + '</button>' + (right || '') + '</div>';
+}
+function render() {
+  if (ui.view === 'langs') app.innerHTML = vLangs();
+  else if (ui.view === 'modes') app.innerHTML = vModes();
+  else if (ui.view === 'add') { app.innerHTML = vAdd(); bindAdd(); }
+  else if (ui.view === 'cards') app.innerHTML = vCards();
+  if (ui.view === 'langs' && ui.adding) { const i = $('#ln'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+}
+
+function vLangs() {
+  const rows = S.langs.map((l) => {
+    const n = wordsOf(l.id).length;
+    const conf = ui.confirmId === l.id;
+    return '<div class="row"><button class="row-main" data-act="open-lang" data-id="' + l.id + '">' +
+      '<span class="badge" style="color:' + esc(l.color) + '">' + esc(l.badge) + '</span>' +
+      '<span><span class="row-title">' + esc(l.name) + '</span><span class="row-sub">' + wordsText(n) + '</span></span></button>' +
+      (conf
+        ? '<button class="small-danger" data-act="del-lang" data-id="' + l.id + '">Удалить</button><button class="small-plain" data-act="del-cancel">Отмена</button>'
+        : '<button class="icon-btn" style="width:44px;height:44px" data-act="del-ask" data-id="' + l.id + '" aria-label="Удалить язык ' + esc(l.name) + '">' + I.trash + '</button>') +
+      '</div>';
+  }).join('');
+  const bottom = ui.adding
+    ? '<div class="panel"><label class="label" for="ln">Название языка</label>' +
+      '<input id="ln" type="text" value="' + esc(ui.draft) + '" placeholder="Например, итальянский" autocomplete="off" autocapitalize="sentences">' +
+      '<div class="btns"><button data-act="add-cancel">Отмена</button><button class="ok" data-act="add-ok">Добавить</button></div></div>'
+    : '<button class="big-btn ghost" data-act="add-start">' + I.plus + ' Добавить язык</button>';
+  return '<main class="screen"><header style="display:flex;flex-direction:column;gap:8px;padding-top:16px"><h1>Что учим?</h1><p class="sub">Выберите язык или добавьте новый</p></header>' +
+    '<div class="list">' + (rows || '<p class="empty">Языков пока нет. Добавьте первый.</p>') + '</div>' + bottom + '</main>';
+}
+
+function vModes() {
+  const l = langById(ui.langId); if (!l) return vLangs();
+  const n = wordsOf(l.id).length;
+  return '<main class="screen">' + topBar() +
+    '<header style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">' + esc(l.name) + ' · ' + wordsText(n) + '</span><h1>Что делаем?</h1></header>' +
+    '<div class="modes">' +
+    '<button class="mode primary" data-act="to-add"><span class="ic">' + I.plus + '</span><span><span class="t">Добавить слово</span><span class="d">Подсказки, транскрипция, перевод</span></span></button>' +
+    '<div class="label group-label">Учить карточки</div>' +
+    '<button class="mode" data-act="start" data-mode="ru"><span class="ic">RU</span><span><span class="t">Русские карточки</span><span class="d">Видите русское слово, вспоминаете перевод</span></span></button>' +
+    '<button class="mode" data-act="start" data-mode="fl"><span class="ic">' + esc(l.badge) + '</span><span><span class="t">Карточки: ' + esc(l.name.toLowerCase()) + '</span><span class="d">Видите слово, вспоминаете значение</span></span></button>' +
+    '</div></main>';
+}
+
+function vAdd() {
+  const l = langById(ui.langId); if (!l) return vLangs();
+  return '<main class="screen">' +
+    '<div class="top"><button class="icon-btn" data-act="back" aria-label="Назад">' + I.back + '</button></div>' +
+    '<h1 style="font-size:28px">Новое слово</h1>' +
+    '<div class="scroll">' +
+    '<div class="field"><label class="label" for="w">Слово · ' + esc(l.name) + '</label>' +
+    '<input id="w" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"' + (l.code ? ' lang="' + esc(l.code) + '"' : '') + '>' +
+    '<div id="sugg" class="sugg" hidden></div></div>' +
+    '<button class="big-btn ghost" id="find" data-act="find" style="min-height:52px;font-size:16px">Найти транскрипцию и перевод</button>' +
+    '<div id="status" class="status" aria-live="polite">' + (l.code ? '' : 'Для этого языка нет подсказок. Заполните поля вручную.') + '</div>' +
+    '<div class="field"><label class="label" for="f-ipa">Транскрипция</label><input id="f-ipa" class="ipa" type="text" autocomplete="off" placeholder="[bɔ̃.ʒuʁ]"></div>' +
+    '<div class="field"><label class="label" for="f-say">Произношение по-русски</label><input id="f-say" type="text" autocomplete="off" placeholder="бонжур"></div>' +
+    '<div class="field"><label class="label" for="f-ru">Перевод</label><input id="f-ru" type="text" autocomplete="off" placeholder="здравствуйте"></div>' +
+    '</div>' +
+    '<button class="big-btn primary" data-act="save-word">Сохранить слово</button></main>';
+}
+
+function curWord() {
+  const s = ui.session; if (!s || s.finished) return null;
+  return S.words.find((w) => w.id === s.queue[s.pos]) || null;
+}
+function vCards() {
+  const l = langById(ui.langId); if (!l) return vLangs();
+  const s = ui.session;
+  if (!s) return vLangs();
+  if (s.empty) {
+    const total = wordsOf(l.id).length;
+    return '<main class="screen">' + topBar() + '<div class="done"><span class="eyebrow">' + (total ? 'Всё изучено' : 'Слов пока нет') + '</span>' +
+      '<p class="sub" style="font-size:18px">' + (total ? 'Все слова этого языка отмечены изученными. Добавьте новые.' : 'Добавьте первое слово, чтобы начать учить.') + '</p></div>' +
+      '<button class="big-btn primary" data-act="to-add">Добавить слово</button></main>';
+  }
+  if (s.finished) {
+    return '<main class="screen"><div class="done"><span class="eyebrow">Сессия завершена</span>' +
+      '<span class="ring">' + s.shown + '</span><span style="font-size:20px;color:var(--mute);margin-top:8px">' + plural(s.shown, 'карточка', 'карточки', 'карточек') + ' показано</span>' +
+      '<span class="sub" style="margin-top:12px">' + (s.learned ? 'Отмечено изученными: ' + s.learned : 'Изученных слов в этой сессии нет') + '</span></div>' +
+      '<div class="stack"><button class="big-btn primary" data-act="start" data-mode="' + s.mode + '">Учить ещё</button>' +
+      '<button class="big-btn" data-act="back">К режимам</button></div></main>';
+  }
+  const w = curWord();
+  const n = w.shown || 0;
+  let face;
+  const cls = (t) => 'big' + (t.length > 14 ? ' long' : '');
+  if (s.mode === 'ru') {
+    face = s.flipped
+      ? '<span class="' + cls(w.word) + '">' + esc(w.word) + '</span>' + (w.ipa ? '<span class="tr ipa">' + esc(w.ipa) + '</span>' : '') + (w.say ? '<span class="say">' + esc(w.say) + '</span>' : '')
+      : '<span class="' + cls(w.ru) + '">' + esc(w.ru) + '</span>';
+  } else {
+    face = s.flipped
+      ? '<span class="' + cls(w.ru) + '">' + esc(w.ru) + '</span>' + (w.ipa ? '<span class="tr ipa">' + esc(w.ipa) + '</span>' : '') + (w.say ? '<span class="say">' + esc(w.say) + '</span>' : '')
+      : '<span class="' + cls(w.word) + '">' + esc(w.word) + '</span>';
+  }
+  return '<main class="screen">' +
+    '<div class="top"><button class="icon-btn" data-act="back" aria-label="Назад к режимам">' + I.back + '</button><button class="pill-btn" data-act="finish">Закончить</button></div>' +
+    '<div class="counter">Показано ' + n + ' ' + plural(n, 'раз', 'раза', 'раз') + ' за всё время</div>' +
+    '<button class="flip" data-act="flip" aria-label="Карточка. Нажмите, чтобы ' + (s.flipped ? 'перейти к следующей' : 'перевернуть') + '">' + face + '</button>' +
+    '<button class="big-btn primary" data-act="learned">' + I.check + ' Изучено</button></main>';
+}
+
+/* ---------- cards session ---------- */
+function startSession(mode) {
+  const ids = wordsOf(ui.langId).filter((w) => !w.learned).map((w) => w.id);
+  if (!ids.length) { ui.session = { empty: true, mode }; go('cards', ui.view !== 'cards'); return; }
+  ui.session = { mode, queue: shuffle(ids), pos: 0, flipped: false, shown: 0, learned: 0, finished: false };
+  showCurrent();
+  go('cards', ui.view !== 'cards');
+}
+function showCurrent() {
+  const w = curWord(); if (!w) return;
+  w.shown = (w.shown || 0) + 1; ui.session.shown++; ui.session.flipped = false; save();
+}
+function reshuffle(avoidId) {
+  const ids = wordsOf(ui.langId).filter((w) => !w.learned).map((w) => w.id);
+  let q = shuffle(ids);
+  if (q.length > 1 && q[0] === avoidId) q.push(q.shift());
+  ui.session.queue = q; ui.session.pos = 0;
+}
+function nextCard(afterRemoval) {
+  const s = ui.session;
+  const lastId = s.queue[s.pos];
+  if (!afterRemoval) s.pos++;
+  if (s.pos >= s.queue.length) reshuffle(afterRemoval ? null : lastId);
+  if (!s.queue.length) { s.finished = true; return; }
+  showCurrent();
+}
+
+/* ---------- add word ---------- */
+let suggTok = 0, suggTimer = null, sayDirty = false;
+function setStatus(msg, err) { const s = $('#status'); if (s) { s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); } }
+function bindAdd() {
+  sayDirty = false; suggTok++;
+  const l = langById(ui.langId);
+  const w = $('#w');
+  w.addEventListener('input', () => {
+    clearTimeout(suggTimer);
+    const q = w.value.trim();
+    const box = $('#sugg');
+    if (q.length < 2) { box.hidden = true; box.innerHTML = ''; return; }
+    suggTimer = setTimeout(async () => {
+      const tok = ++suggTok;
+      try {
+        const list = await fetchSuggest(q, l.code);
+        if (tok !== suggTok || !$('#sugg')) return;
+        if (!list.length) { box.hidden = true; return; }
+        box.innerHTML = list.map((t, i) => {
+          const pre = t.toLowerCase().startsWith(q.toLowerCase()) ? q.length : 0;
+          return '<button data-act="pick" data-w="' + esc(t) + '"><b>' + esc(t.slice(0, pre)) + '</b>' + esc(t.slice(pre)) + '</button>';
+        }).join('');
+        box.hidden = false;
+      } catch (e) { if (tok === suggTok && $('#sugg')) { box.hidden = true; } }
+    }, 250);
+  });
+  w.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); lookup(); } });
+  $('#f-ipa').addEventListener('input', (e) => { if (!sayDirty) $('#f-say').value = ipaToRu(e.target.value); });
+  $('#f-say').addEventListener('input', () => { sayDirty = true; });
+}
+async function lookup() {
+  const l = langById(ui.langId);
+  const word = $('#w').value.trim();
+  if (!word) { setStatus('Введите слово.', true); return; }
+  suggTok++; $('#sugg').hidden = true;
+  if (!l.code) { setStatus('Для этого языка нет подсказок. Заполните поля вручную.', true); return; }
+  const btn = $('#find'); btn.disabled = true;
+  setStatus('Ищу транскрипцию и перевод…');
+  const [ipa, tr] = await Promise.allSettled([fetchIPA(word, l.eng), fetchTranslation(word, l.code)]);
+  if (ui.view !== 'add' || !$('#w')) return;
+  btn.disabled = false;
+  const miss = [];
+  if (ipa.status === 'fulfilled' && ipa.value) {
+    $('#f-ipa').value = ipa.value;
+    if (!sayDirty) $('#f-say').value = ipaToRu(ipa.value);
+  } else miss.push('транскрипцию');
+  if (tr.status === 'fulfilled' && tr.value) $('#f-ru').value = tr.value;
+  else miss.push('перевод');
+  if (!miss.length) setStatus('Готово. Проверьте и сохраните.');
+  else if (miss.length === 2 && ipa.status === 'rejected' && tr.status === 'rejected') setStatus('Нет связи со словарями. Заполните поля вручную.', true);
+  else setStatus('Не нашёл ' + miss.join(' и ') + '. Допишите вручную.', true);
+}
+function saveWord() {
+  const l = langById(ui.langId);
+  const word = $('#w').value.trim(), ru = $('#f-ru').value.trim();
+  if (!word) { setStatus('Введите слово.', true); $('#w').focus(); return; }
+  if (!ru) { setStatus('Добавьте перевод.', true); $('#f-ru').focus(); return; }
+  if (wordsOf(l.id).some((x) => x.word.toLowerCase() === word.toLowerCase())) { setStatus('Это слово уже есть в словаре.', true); return; }
+  S.words.push({ id: S.nextId++, langId: l.id, word, ipa: $('#f-ipa').value.trim(), say: $('#f-say').value.trim(), ru, shown: 0, learned: false });
+  save();
+  render();
+  toast('Слово добавлено');
+  $('#w').focus();
+}
+
+/* ---------- events ---------- */
+app.addEventListener('input', (e) => { if (e.target.id === 'ln') ui.draft = e.target.value; });
+app.addEventListener('keydown', (e) => { if (e.target.id === 'ln' && e.key === 'Enter') { e.preventDefault(); addLang(); } });
+function addLang() {
+  const name = ui.draft.trim();
+  if (!name) { const i = $('#ln'); if (i) i.focus(); return; }
+  const cap = name.charAt(0).toUpperCase() + name.slice(1);
+  const info = langInfo(cap);
+  const id = S.nextId++;
+  S.langs.push({ id, name: cap, code: info ? info[0] : '', eng: info ? info[1] : '', badge: (info ? info[0] : cap.slice(0, 2)).toUpperCase(), color: COLORS[id % COLORS.length] });
+  save(); ui.adding = false; ui.draft = ''; render();
+  if (!info) toast('Подсказки словаря для этого языка недоступны');
+}
+app.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act, id = Number(b.dataset.id);
+  switch (act) {
+    case 'add-start': ui.adding = true; ui.draft = ''; render(); break;
+    case 'add-cancel': ui.adding = false; ui.draft = ''; render(); break;
+    case 'add-ok': addLang(); break;
+    case 'del-ask': ui.confirmId = id; render(); break;
+    case 'del-cancel': ui.confirmId = null; render(); break;
+    case 'del-lang':
+      S.langs = S.langs.filter((l) => l.id !== id); S.words = S.words.filter((w) => w.langId !== id);
+      ui.confirmId = null; save(); render(); break;
+    case 'open-lang': ui.langId = id; go('modes'); break;
+    case 'to-add': go('add', ui.view !== 'add'); break;
+    case 'start': startSession(b.dataset.mode); break;
+    case 'back':
+      if (ui.view === 'cards') { ui.session = null; }
+      if (history.state && history.state.v && history.state.v !== 'langs') history.back();
+      else go(ui.view === 'modes' ? 'langs' : 'modes', false);
+      break;
+    case 'pick': $('#w').value = b.dataset.w; lookup(); break;
+    case 'find': lookup(); break;
+    case 'save-word': saveWord(); break;
+    case 'flip':
+      if (!ui.session.flipped) ui.session.flipped = true; else nextCard(false);
+      render(); break;
+    case 'learned': {
+      const w = curWord(); if (!w) break;
+      w.learned = true; ui.session.learned++; ui.session.queue.splice(ui.session.pos, 1); save();
+      if (!wordsOf(ui.langId).some((x) => !x.learned)) ui.session.finished = true;
+      else nextCard(true);
+      render(); break;
+    }
+    case 'finish': ui.session.finished = true; render(); break;
+  }
+});
+
+render();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
