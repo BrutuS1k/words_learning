@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#E0E5EC">
+<meta name="theme-color" content="#262B33">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Слова">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Слова</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Noto+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Noto+Sans:wght@400;600&display=swap">
 <style>
 :root{
-  --bg:#E0E5EC; --hi:#FFFFFF; --lo:#A3B1C6; --field:#F6F8FB; --off:#D5DBE3;
-  --ink:#3D4852; --mute:#4F5D6B; --accent:#2F4FC4; --warm:#A8410A; --danger:#B3261E;
-  --font:'Onest','Noto Sans',system-ui,sans-serif; --ipa:'Noto Sans','Segoe UI',system-ui,sans-serif;
+  --bg:#262B33; --hi:#323843; --lo:#191D23; --field:#2D333C; --off:#1F2328;
+  --ink:#E8ECF2; --mute:#A0AAB8; --accent:#5EEAC4; --warm:#FFB86B; --danger:#B3261E; --mintbg:linear-gradient(145deg,#6FF2D0,#3FD1AA); --onmint:#12332B;
+  --font:'Outfit','Noto Sans',system-ui,sans-serif; --ipa:'Noto Sans','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
@@ -35,57 +35,69 @@ h1{margin:0;font-size:32px;line-height:1.15;font-weight:700;text-wrap:balance}
 .eyebrow{font-size:14px;font-weight:600;color:var(--accent)}
 .label{font-size:14px;font-weight:600;color:var(--mute)}
 
-.raised{box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
-.raised-s{box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
-.raised-l{box-shadow:12px 12px 22px var(--lo),-12px -12px 22px var(--hi)}
-.inset{box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
 button:active:not(:disabled){box-shadow:inset 5px 5px 9px var(--lo),inset -5px -5px 9px var(--hi)}
 button:disabled{opacity:.55;cursor:default}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .icon-btn{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
-.pill-btn{min-height:48px;padding:0 24px;border-radius:24px;font-weight:600;font-size:16px;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
-.big-btn{min-height:60px;border-radius:24px;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
-.big-btn.primary{background:var(--accent);color:#fff}
+.pill-btn{min-height:48px;padding:0 24px;border-radius:99px;font-weight:600;font-size:16px;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.big-btn{min-height:60px;border-radius:99px;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:7px 7px 14px var(--lo),-6px -6px 12px var(--hi)}
+.big-btn.primary{background:var(--mintbg);color:var(--onmint)}
 .big-btn.ghost{color:var(--accent)}
+.mode.compact{min-height:76px;padding:12px 20px}
+.mode.compact .t{font-size:18px}
+.mode.compact .ic{width:44px;height:44px}
+.letter{font-size:14px;font-weight:700;color:var(--accent);margin:8px 0 -6px 6px}
+.wrow{display:flex;align-items:center;gap:4px;min-height:72px;padding:10px 8px 10px 18px;border-radius:22px;flex-shrink:0;box-shadow:7px 7px 14px var(--lo),-6px -6px 12px var(--hi)}
+.wrow .w{flex:1;min-width:0}
+.wrow .wt{display:block;font-size:18px;font-weight:600;overflow-wrap:anywhere}
+.wrow .wt .ipa{font-size:14px;font-weight:400;color:var(--mute)}
+.wrow .ws{display:block;font-size:15px;color:var(--mute)}
 
 .list{display:flex;flex-direction:column;gap:22px;flex:1;min-height:0;overflow-y:auto;padding:12px 14px 20px;margin:-12px -14px -20px}
-.row{display:flex;align-items:center;gap:6px;min-height:80px;padding:12px 10px 12px 16px;border-radius:24px;background:var(--bg);flex-shrink:0;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.row{display:flex;align-items:center;gap:6px;min-height:76px;padding:0 10px 0 12px;border-radius:99px;background:var(--bg);flex-shrink:0;box-shadow:7px 7px 14px var(--lo),-6px -6px 12px var(--hi)}
 .row-main{flex:1;min-width:0;display:flex;align-items:center;gap:16px;text-align:left;padding:0;background:transparent;box-shadow:none!important}
 .badge{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;box-shadow:5px 5px 9px var(--lo),-5px -5px 9px var(--hi)}
 .row-title{display:block;font-size:18px;font-weight:600;overflow-wrap:anywhere}
 .row-sub{display:block;font-size:14px;color:var(--mute)}
 .small-danger{min-height:44px;padding:0 14px;border-radius:14px;background:var(--danger);color:#fff;font-weight:600;font-size:14px;box-shadow:4px 4px 8px var(--lo),-4px -4px 8px var(--hi)}
 .small-plain{min-height:44px;padding:0 10px;background:transparent;color:var(--mute);font-weight:600;font-size:14px;box-shadow:none!important}
-.panel{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:24px;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
+.panel{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:24px;box-shadow:7px 7px 14px var(--lo),-6px -6px 12px var(--hi)}
 .panel .btns{display:flex;gap:16px}
 .panel .btns button{flex:1;min-height:48px;border-radius:16px;font-weight:600;font-size:16px;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
-.panel .btns .ok{background:var(--accent);color:#fff}
+.panel .btns .ok{background:var(--mintbg);color:var(--onmint)}
 .empty{margin:24px 0;text-align:center;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;padding:4px 4px 8px}
+.chip{min-height:44px;padding:0 18px;border-radius:22px;font-size:16px;font-weight:600;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.chip.sel{color:var(--accent);box-shadow:inset 4px 4px 8px var(--lo),inset -4px -4px 8px var(--hi)}
+.picker{display:flex;flex-direction:column;gap:16px;max-height:40vh;overflow-y:auto;padding:10px 12px 14px;margin:-6px -12px}
+.pick{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 14px;border-radius:18px;text-align:left;flex-shrink:0;box-shadow:5px 5px 10px var(--lo),-5px -5px 10px var(--hi)}
+.badge.sm{width:40px;height:40px;font-size:13px;box-shadow:inset 3px 3px 6px var(--lo),inset -3px -3px 6px var(--hi);color:var(--accent)}
 
+/* editable fields are near-white; the disabled one sits flat in the background */
 input[type=text]{width:100%;height:56px;padding:0 20px;border:0;border-radius:18px;background:var(--field);font-size:18px;outline:none;box-shadow:inset 6px 6px 10px var(--lo),inset -6px -6px 10px var(--hi)}
-input[type=text]:disabled{background:var(--off);color:#5F6C79;box-shadow:none;cursor:not-allowed}
-input[type=text]:disabled::placeholder{color:#5F6C79}
+input[type=text]:disabled{background:var(--off);color:#6E7888;box-shadow:none;cursor:not-allowed}
+input[type=text]:disabled::placeholder{color:#6E7888}
 input[type=text]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-input::placeholder{color:#6A7886}
+input::placeholder{color:#7B8696}
 .field{display:flex;flex-direction:column;gap:10px}
 .scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:6px 14px 20px;margin:-6px -14px -20px}
 .sugg{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;box-shadow:6px 6px 12px var(--lo),-6px -6px 12px var(--hi)}
 .sugg button{min-height:48px;padding:0 20px;text-align:left;font-size:17px;border-radius:0;display:flex;align-items:baseline;gap:0}
-.sugg button+button{border-top:1px solid rgba(163,177,198,.35)}
+.sugg button+button{border-top:1px solid rgba(255,255,255,.07)}
 .sugg b{font-weight:700}
 .status{min-height:22px;font-size:14px;color:var(--mute)}
-.status.err{color:var(--danger)}
+.status.err{color:#FF8A80}
 .ipa{font-family:var(--ipa)}
 
 .modes{display:flex;flex-direction:column;gap:24px;flex:1}
-.mode{display:flex;align-items:center;gap:16px;min-height:100px;padding:16px 20px;border-radius:28px;text-align:left;width:100%;box-shadow:9px 9px 16px var(--lo),-9px -9px 16px var(--hi)}
-.mode.primary{background:var(--accent);color:#fff}
+.mode{display:flex;align-items:center;gap:16px;min-height:100px;padding:16px 20px;border-radius:28px;text-align:left;width:100%;box-shadow:7px 7px 14px var(--lo),-6px -6px 12px var(--hi)}
+.mode.primary{background:var(--mintbg);color:var(--onmint)}
 .mode .t{display:block;font-size:20px;font-weight:600}
 .mode .d{display:block;font-size:14px;color:var(--mute)}
-.mode.primary .d{color:#fff}
+.mode.primary .d{color:var(--onmint)}
 .mode .ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:15px;color:var(--accent);box-shadow:5px 5px 9px var(--lo),-5px -5px 9px var(--hi)}
-.mode.primary .ic{background:rgba(0,0,0,.16);color:#fff;box-shadow:inset 3px 3px 6px rgba(0,0,0,.25),inset -3px -3px 6px rgba(255,255,255,.18)}
+.mode.primary .ic{background:rgba(0,0,0,.16);color:var(--onmint);box-shadow:inset 3px 3px 6px rgba(0,0,0,.25),inset -3px -3px 6px rgba(255,255,255,.18)}
 .group-label{margin:8px 0 -8px 4px}
 
 .counter{align-self:center;padding:10px 20px;border-radius:20px;font-size:15px;font-weight:600;color:var(--mute);box-shadow:inset 4px 4px 8px var(--lo),inset -4px -4px 8px var(--hi)}
@@ -132,29 +144,28 @@ const I = {
   back: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
   plus: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  list: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>',
   check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
 };
 
-/* ---------- known languages (for external dictionaries) ---------- */
-const KNOWN = {
-  'английский':['en','English'],'французский':['fr','French'],'немецкий':['de','German'],'испанский':['es','Spanish'],
-  'итальянский':['it','Italian'],'португальский':['pt','Portuguese'],'нидерландский':['nl','Dutch'],'голландский':['nl','Dutch'],
-  'польский':['pl','Polish'],'чешский':['cs','Czech'],'шведский':['sv','Swedish'],'норвежский':['no','Norwegian'],
-  'датский':['da','Danish'],'финский':['fi','Finnish'],'турецкий':['tr','Turkish'],'греческий':['el','Greek'],
-  'японский':['ja','Japanese'],'китайский':['zh','Chinese'],'корейский':['ko','Korean'],'венгерский':['hu','Hungarian'],
-  'румынский':['ro','Romanian'],'украинский':['uk','Ukrainian'],'латинский':['la','Latin'],'арабский':['ar','Arabic'],
-  'иврит':['he','Hebrew'],'хинди':['hi','Hindi'],'грузинский':['ka','Georgian'],'сербский':['sr','Serbo-Croatian'],
-  'болгарский':['bg','Bulgarian'],'хорватский':['hr','Serbo-Croatian'],'вьетнамский':['vi','Vietnamese'],'тайский':['th','Thai'],
-  'индонезийский':['id','Indonesian'],'армянский':['hy','Armenian'],'литовский':['lt','Lithuanian'],'латышский':['lv','Latvian'],
-  'эстонский':['et','Estonian'],'словацкий':['sk','Slovak'],'словенский':['sl','Slovene'],'персидский':['fa','Persian']
-};
-function langInfo(name) {
-  const n = name.trim().toLowerCase();
-  if (KNOWN[n]) return KNOWN[n];
-  const stem = n.slice(0, 6);
-  if (stem.length >= 5) { for (const k in KNOWN) if (k.slice(0, 6) === stem) return KNOWN[k]; }
-  return null;
-}
+/* ---------- available languages ---------- */
+// [name in Russian, Wiktionary code, section name in English Wiktionary, English name]
+const LANGS = [
+  ['Английский','en','English','English'],['Арабский','ar','Arabic','Arabic'],['Армянский','hy','Armenian','Armenian'],
+  ['Болгарский','bg','Bulgarian','Bulgarian'],['Венгерский','hu','Hungarian','Hungarian'],['Вьетнамский','vi','Vietnamese','Vietnamese'],
+  ['Греческий','el','Greek','Greek'],['Грузинский','ka','Georgian','Georgian'],['Датский','da','Danish','Danish'],
+  ['Иврит','he','Hebrew','Hebrew'],['Индонезийский','id','Indonesian','Indonesian'],['Испанский','es','Spanish','Spanish'],
+  ['Итальянский','it','Italian','Italian'],['Китайский','zh','Chinese','Chinese'],['Корейский','ko','Korean','Korean'],
+  ['Латинский','la','Latin','Latin'],['Латышский','lv','Latvian','Latvian'],['Литовский','lt','Lithuanian','Lithuanian'],
+  ['Немецкий','de','German','German'],['Нидерландский','nl','Dutch','Dutch'],['Норвежский','no','Norwegian Bokmål','Norwegian'],
+  ['Персидский','fa','Persian','Persian'],['Польский','pl','Polish','Polish'],['Португальский','pt','Portuguese','Portuguese'],
+  ['Румынский','ro','Romanian','Romanian'],['Сербский','sr','Serbo-Croatian','Serbian'],['Словацкий','sk','Slovak','Slovak'],
+  ['Словенский','sl','Slovene','Slovene'],['Тайский','th','Thai','Thai'],['Турецкий','tr','Turkish','Turkish'],
+  ['Украинский','uk','Ukrainian','Ukrainian'],['Финский','fi','Finnish','Finnish'],['Французский','fr','French','French'],
+  ['Хинди','hi','Hindi','Hindi'],['Хорватский','hr','Serbo-Croatian','Croatian'],['Чешский','cs','Czech','Czech'],
+  ['Шведский','sv','Swedish','Swedish'],['Эстонский','et','Estonian','Estonian'],['Японский','ja','Japanese','Japanese']
+];
+const langByCode = (code) => LANGS.find((x) => x[1] === code);
 
 /* ---------- storage ---------- */
 const KEY = 'words-app-v1';
@@ -166,18 +177,35 @@ function load() {
   return { langs: [], words: [], nextId: 1 };
 }
 let S = load();
+function migrate() {
+  let changed = false;
+  S.langs.forEach((l) => {
+    if (l.code) return;
+    const n = String(l.name || '').trim().toLowerCase();
+    const m = LANGS.find((x) => x[0].toLowerCase() === n || x[3].toLowerCase() === n || x[1] === n);
+    if (m) { l.name = m[0]; l.code = m[1]; l.eng = m[2]; l.badge = m[1].toUpperCase(); changed = true; }
+  });
+  // the dark theme needs lighter badge colours
+  S.langs.forEach((l) => { if (!COLORS.includes(l.color)) { l.color = COLORS[l.id % COLORS.length]; changed = true; } });
+  // Serbian is written in Latin: convert words saved in Cyrillic by earlier versions
+  S.words.forEach((w) => {
+    const l = S.langs.find((x) => x.id === w.langId);
+    if (l && l.code === 'sr' && hasCyr(w.word)) { w.word = srToLat(w.word); changed = true; }
+  });
+  if (changed) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('Не удалось сохранить данные'); } }
-const COLORS = ['#2F4FC4', '#3D4852', '#A8410A', '#0F766E', '#7A3E9D'];
+const COLORS = ['#5EEAC4', '#8AB4FF', '#FFB86B', '#F59DD0', '#C4A8FF'];
 const langById = (id) => S.langs.find((l) => l.id === id);
 const wordsOf = (id) => S.words.filter((w) => w.langId === id);
 
 /* ---------- IPA -> simplified Russian ---------- */
-const M2 = { 'tʃ': 'ч', 'dʒ': 'дж', 'ts': 'ц', 'dz': 'дз', 'tɕ': 'ч', 'dʑ': 'дж' };
+const M2 = { 'əʊ': 'оу', 'oʊ': 'оу', 'aɪ': 'ай', 'eɪ': 'эй', 'ɔɪ': 'ой', 'aʊ': 'ау', 'tʃ': 'ч', 'dʒ': 'дж', 'ts': 'ц', 'dz': 'дз', 'tɕ': 'ч', 'dʑ': 'дж' };
 const CONS = { 'ʋ':'в','ʑ':'зь', p:'п',b:'б',t:'т',d:'д',k:'к',g:'г','ɡ':'г',f:'ф',v:'в',s:'с',z:'з','ʃ':'ш','ʒ':'ж',h:'х',x:'х','χ':'х','ʁ':'р',r:'р','ɾ':'р','ɹ':'р',l:'л','ɫ':'л',m:'м',n:'н','ɲ':'нь','ŋ':'нг',j:'й',w:'в','θ':'с','ð':'з','ç':'х','ɥ':'ю','ɕ':'щ','ʎ':'ль',c:'к',q:'к','ɟ':'дь' };
 const VOW = { a:'а','ɑ':'а','ɐ':'а','æ':'э','ɛ':'э',e:'э','ə':'е','ɜ':'ё','ɪ':'и',i:'и','ɔ':'о',o:'о','ʊ':'у',u:'у','ʌ':'а','ɒ':'о',y:'ю','ø':'ё','œ':'ё','ɨ':'ы','ɯ':'у','ʏ':'ю','ɚ':'ер','ɝ':'ёр','ɵ':'о','ɘ':'е','ɤ':'о','ɞ':'ё' };
 function ipaToRu(ipa) {
   // drop tone/length/tie marks (Serbian IPA is full of them), keep the nasal tilde and "ç"
-  let s = String(ipa || '').replace(/ç/g, '').normalize('NFD')
+  const s = String(ipa || '').replace(/ç/g, '').normalize('NFD')
     .replace(/[̀-̂̄-ͯ]/g, '')
     .replace(//g, 'ç')
     .replace(/[\[\]\/()ˈˌ.‿‖|ːˑʰʲʷʰ]/g, '');
@@ -195,15 +223,6 @@ function ipaToRu(ipa) {
   return out.trim();
 }
 
-/* ---------- external sources ---------- */
-async function jget(url, ms) {
-  const c = new AbortController(); const t = setTimeout(() => c.abort(), ms || 9000);
-  try {
-    const r = await fetch(url, { signal: c.signal });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return await r.json();
-  } finally { clearTimeout(t); }
-}
 /* ---------- Serbian: Latin <-> Cyrillic, spelling-based Russian reading ---------- */
 const CYR2LAT = { 'а':'a','б':'b','в':'v','г':'g','д':'d','ђ':'đ','е':'e','ж':'ž','з':'z','и':'i','ј':'j','к':'k','л':'l','љ':'lj','м':'m','н':'n','њ':'nj','о':'o','п':'p','р':'r','с':'s','т':'t','ћ':'ć','у':'u','ф':'f','х':'h','ц':'c','ч':'č','џ':'dž','ш':'š' };
 const LAT2CYR = { 'a':'а','b':'б','c':'ц','č':'ч','ć':'ћ','d':'д','đ':'ђ','e':'е','f':'ф','g':'г','h':'х','i':'и','j':'ј','k':'к','l':'л','m':'м','n':'н','o':'о','p':'п','r':'р','s':'с','š':'ш','t':'т','u':'у','v':'в','z':'з','ž':'ж' };
@@ -237,99 +256,226 @@ function srReadingRu(word) {
 }
 const isSr = (code) => code === 'sr';
 
+/* ---------- external sources ---------- */
+async function jget(url, ms) {
+  const c = new AbortController(); const t = setTimeout(() => c.abort(), ms || 9000);
+  try {
+    const r = await fetch(url, { signal: c.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
 // Suggestions while typing: Wiktionary of the studied language
 async function fetchSuggest(q, code) {
-  const os = (host, term) => jget('https://' + host + '/w/api.php?action=opensearch&format=json&origin=*&limit=8&namespace=0&search=' + encodeURIComponent(term), 6000).then((d) => d[1] || []);
+  const os = (host, term) => jget('https://' + host + '/w/api.php?action=opensearch&format=json&origin=*&limit=15&namespace=0&search=' + encodeURIComponent(term), 6000).then((d) => d[1] || []);
+  if (code === 'en') {
+    // Datamuse ranks English completions by how common the word is; Wiktionary is the fallback
+    let dm = null;
+    try { dm = (await jget('https://api.datamuse.com/sug?max=8&s=' + encodeURIComponent(q), 6000)).map((x) => x.word); } catch (e) { dm = null; }
+    if (dm && dm.length) return dm;
+    try { return await os('en.wiktionary.org', q); } catch (e) { if (dm) return []; throw e; }
+  }
   if (isSr(code)) {
-    // sr.wiktionary is written in Cyrillic, sh.wiktionary in Latin; try both spellings and merge
-    const res = await Promise.allSettled([os('sr.wiktionary.org', srToCyr(q)), os('sh.wiktionary.org', srToLat(q))]);
+    q = q.trim().toLowerCase();
+    // sr.wiktionary is written in Cyrillic, sh.wiktionary in Latin, Wikidata lexemes cover both; merge them
+    const wd = (term) => jget('https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&uselang=en&type=lexeme&language=sr&limit=8&search=' + encodeURIComponent(term), 6000)
+      .then((d) => (d.search || []).filter((x) => /serbo|serbian|croatian|bosnian/i.test(x.description || '')).map((x) => x.label || (x.match && x.match.text)).filter(Boolean));
+    const res = await Promise.allSettled([os('sr.wiktionary.org', srToCyr(q)), os('sh.wiktionary.org', srToLat(q)), wd(srToCyr(q))]);
     let list = [];
     res.forEach((r) => { if (r.status === 'fulfilled') list = list.concat(r.value); });
     if (list.length < 3) {
       try { list = list.concat(await os('en.wiktionary.org', hasCyr(q) ? q : srToCyr(q))); } catch (e) {}
     }
     if (!list.length && res.every((r) => r.status === 'rejected')) throw new Error('offline');
+    // show Latin only; Cyrillic results are transliterated, duplicates merged, closest matches first
+    const ql = srToLat(q).toLowerCase();
     const seen = new Set();
-    return list.filter((t) => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
-  }
-  if (code === 'en') {
-    // Datamuse completes English words by prefix; Wiktionary is the fallback
-    try {
-      const d = await jget('https://api.datamuse.com/sug?max=8&s=' + encodeURIComponent(q), 6000);
-      const list = d.map((x) => x.word).filter(Boolean);
-      if (list.length) return list;
-    } catch (e) { /* fall through */ }
+    const uniq = list.map(srToLat).filter((t) => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
+    const pre = uniq.filter((t) => t.toLowerCase().startsWith(ql));
+    if (ql.includes(' ') && !pre.some((t) => t.toLowerCase() === ql)) pre.unshift(ql);
+    return pre.concat(uniq.filter((t) => !t.toLowerCase().startsWith(ql))).slice(0, 8);
   }
   return os((code || 'en') + '.wiktionary.org', q);
 }
-// English transcription fallback: Free Dictionary API
-async function fetchIPADict(word) {
-  try {
-    const d = await jget('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word), 8000);
-    const e = Array.isArray(d) ? d[0] : null;
-    if (!e) return '';
-    const p = (e.phonetics || []).find((x) => x.text);
-    return (p && p.text) || e.phonetic || '';
-  } catch (err) {
-    if (/HTTP 404/.test(String(err.message))) return ''; // word not in the dictionary: not a connection problem
-    throw err;
+// Try several sources in order. A source that answers "not found" still counts as reachable;
+// only when every source fails to answer do we report that the dictionary cannot be reached.
+async function firstIPA(fns) {
+  let reached = false, err = null;
+  for (const f of fns) {
+    try { const r = await f(); reached = true; if (r) return r; } catch (e) { err = e; }
   }
-}
-// Transcription: IPA from the English Wiktionary entry, language section.
-// Throws only when every source failed to answer (no connection); returns '' when the word simply has none.
-async function fetchIPA(word, eng, code) {
-  // Serbian entries exist in both scripts: try the typed form first, then the other one
-  const forms = eng === 'Serbo-Croatian' ? [word, hasCyr(word) ? srToLat(word) : srToCyr(word)] : [word];
-  let failed = 0, total = 0, last;
-  for (const w of forms) {
-    total++;
-    try { const r = await fetchIPAOne(w, eng); if (r) return r; } catch (e) { failed++; last = e; }
-  }
-  if (code === 'en') {
-    total++;
-    try { const r = await fetchIPADict(word); if (r) return r; } catch (e) { failed++; last = e; }
-  }
-  if (failed === total) throw last;
+  if (!reached) throw err || new Error('offline');
   return '';
 }
+// English: dictionaryapi.dev first, then the English Wiktionary
+async function fetchIPAEnglish(word) {
+  const c = new AbortController(); const t = setTimeout(() => c.abort(), 9000);
+  try {
+    const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word), { signal: c.signal });
+    if (r.status === 404) return '';
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    for (const e of d) for (const p of (e.phonetics || [])) if (p.text) return p.text;
+    for (const e of d) if (e.phonetic) return e.phonetic;
+    return '';
+  } finally { clearTimeout(t); }
+}
+async function fetchIPA(word, eng, code) {
+  if (code === 'en') return firstIPA([() => fetchIPAEnglish(word), () => fetchIPAOne(word, eng)]);
+  if (eng === 'Serbo-Croatian') {
+    // entries exist in both scripts; try the typed form first, then the other one
+    const alt = hasCyr(word) ? srToLat(word) : srToCyr(word);
+    return firstIPA([() => fetchIPAOne(word, eng), () => fetchIPAOne(alt, eng)]);
+  }
+  return fetchIPAOne(word, eng);
+}
+// Parsed Wiktionary pages are reused: one request serves both the transcription and the translation
+const wdocCache = new Map();
+function wiktDoc(host, word) {
+  const key = host + '|' + word;
+  if (!wdocCache.has(key)) {
+    const p = jget('https://' + host + '/w/api.php?action=parse&prop=text&format=json&formatversion=2&redirects=1&origin=*&page=' + encodeURIComponent(word), 12000)
+      .then((d) => { const html = d && d.parse && d.parse.text; return html ? new DOMParser().parseFromString(html, 'text/html') : null; });
+    wdocCache.set(key, p);
+    p.catch(() => wdocCache.delete(key));
+    if (wdocCache.size > 24) wdocCache.delete(wdocCache.keys().next().value);
+  }
+  return wdocCache.get(key);
+}
+// Elements of one language section of a Wiktionary page (from its heading up to the next heading of the same level)
+function langSection(doc, id, stop) {
+  const h = doc && doc.getElementById(id.replace(/ /g, '_'));
+  if (!h) return [];
+  const out = [];
+  let node = h.closest('.mw-heading') || h.closest('h1, h2') || h;
+  for (node = node.nextElementSibling; node; node = node.nextElementSibling) {
+    if (node.matches(stop || 'h2, .mw-heading2')) break;
+    out.push(node);
+  }
+  return out;
+}
 async function fetchIPAOne(word, eng) {
-  const d = await jget('https://en.wiktionary.org/w/api.php?action=parse&prop=text&format=json&formatversion=2&redirects=1&origin=*&page=' + encodeURIComponent(word), 12000);
-  const html = d && d.parse && d.parse.text;
-  if (!html) return '';
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const id = eng.replace(/ /g, '_');
-  const h = doc.getElementById(id);
+  const doc = await wiktDoc('en.wiktionary.org', word);
   let el = null;
-  if (h) {
-    let node = h.closest('.mw-heading') || h;
-    for (node = node.nextElementSibling; node; node = node.nextElementSibling) {
-      if (node.matches('h2, .mw-heading2, .mw-heading.mw-heading2')) break;
-      el = node.matches('.IPA') ? node : node.querySelector('.IPA');
-      if (el) break;
-    }
+  for (const node of langSection(doc, eng)) {
+    el = node.matches('.IPA') ? node : node.querySelector('.IPA');
+    if (el) break;
   }
   return el ? el.textContent.trim() : '';
 }
-// Translation to Russian: MyMemory
-async function translateOnce(q, code) {
-  const d = await jget('https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent(code + '|ru') + '&q=' + encodeURIComponent(q), 9000);
-  const t = d && d.responseData && d.responseData.translatedText;
-  if (!t || /MYMEMORY WARNING|INVALID/i.test(t)) return '';
-  const r = t.trim().toLowerCase();
-  return r === q.trim().toLowerCase() ? '' : r; // an unchanged echo means "not translated"
+
+/* ---------- translation to Russian: several sources, up to 3 variants ---------- */
+const okVariant = (t) => !!t && t.length <= 30 && t.split(/\s+/).length <= 3 && /[Ѐ-ӿ]/.test(t) && !/[\[\]()0-9]/.test(t);
+// English headword -> Russian from the "Translations" tables of the English Wiktionary, one entry per sense first
+async function enRussian(word) {
+  const doc = await wiktDoc('en.wiktionary.org', word);
+  const nodes = langSection(doc, 'English');
+  const boxes = [];
+  nodes.forEach((n) => { if (n.matches('.translations')) boxes.push(n); n.querySelectorAll('.translations').forEach((b) => boxes.push(b)); });
+  const lists = (boxes.length ? boxes : nodes).map((b) => Array.from(b.querySelectorAll('span[lang="ru"]')).map((e) => (e.textContent || '').trim().toLowerCase()).filter(okVariant));
+  const out = [];
+  for (let k = 0; k < 4; k++) lists.forEach((l) => { if (l[k] && !out.includes(l[k])) out.push(l[k]); });
+  return out.slice(0, 6);
 }
-async function fetchTranslation(word, code) {
-  if (isSr(code)) {
-    // MyMemory knows Serbian in Cyrillic; fall back to the Latin spelling
-    let r = '';
-    try { r = await translateOnce(srToCyr(word), code); } catch (e) { if (hasCyr(word)) throw e; }
-    return r || translateOnce(srToLat(word), code);
+// Russian Wiktionary: short definitions of the word, in Russian
+function ruDefinitionParts(li) {
+  const c = li.cloneNode(true);
+  c.querySelectorAll('ul, ol, dl, sup, style, .example-fake, .example, .mw-editsection, .ref').forEach((e) => e.remove());
+  let t = (c.textContent || '').split('◄')[0];
+  t = t.replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (/^(см\.|то же|устар|неправ)/i.test(t)) return [];
+  return t.split(/[;,]/).map((x) => x.trim().replace(/[.:]$/, '').toLowerCase()).filter(okVariant);
+}
+async function ruWikt(word, l) {
+  const words = isSr(l.code) ? [word, hasCyr(word) ? srToLat(word) : srToCyr(word)] : [word];
+  const ids = isSr(l.code) ? ['Сербский', 'Сербохорватский'] : l.code === 'hr' ? ['Хорватский', 'Сербохорватский'] : [l.name];
+  let reached = false, err = null;
+  const out = [];
+  for (const w of words) {
+    try {
+      const doc = await wiktDoc('ru.wiktionary.org', w); reached = true;
+      for (const id of ids) {
+        const nodes = langSection(doc, id, 'h1, .mw-heading1');
+        const ol = nodes.map((n) => (n.matches('ol') ? n : n.querySelector('ol'))).find(Boolean);
+        if (!ol) continue;
+        Array.from(ol.children).filter((li) => li.tagName === 'LI').slice(0, 3).forEach((li) => ruDefinitionParts(li).slice(0, 2).forEach((t) => { if (!out.includes(t)) out.push(t); }));
+        if (out.length) break;
+      }
+    } catch (e) { err = e; }
+    if (out.length) break;
   }
-  return translateOnce(word, code);
+  if (!reached) throw err || new Error('offline');
+  return out;
+}
+// Serbian: English meanings from the English Wiktionary, each translated to Russian through its own translation table
+function englishGloss(li) {
+  const c = li.cloneNode(true);
+  c.querySelectorAll('ul, ol, dl, sup, style, .mw-editsection').forEach((e) => e.remove());
+  let t = (c.textContent || '').split(/[;,]/)[0].replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  t = t.replace(/^(to|a|an|the)\s+/, '');
+  return /^[a-z-]+$/.test(t) ? t : '';
+}
+async function srPivot(word) {
+  const glosses = [];
+  let reached = false, err = null;
+  for (const w of [word, hasCyr(word) ? srToLat(word) : srToCyr(word)]) {
+    try {
+      const doc = await wiktDoc('en.wiktionary.org', w); reached = true;
+      const ol = langSection(doc, 'Serbo-Croatian').map((n) => (n.matches('ol') ? n : n.querySelector('ol'))).find(Boolean);
+      if (ol) Array.from(ol.children).filter((li) => li.tagName === 'LI').slice(0, 3).forEach((li) => { const g = englishGloss(li); if (g && !glosses.includes(g)) glosses.push(g); });
+    } catch (e) { err = e; }
+    if (glosses.length) break;
+  }
+  if (!reached) throw err || new Error('offline');
+  const out = [];
+  const res = await Promise.allSettled(glosses.slice(0, 3).map((g) => enRussian(g)));
+  res.forEach((r) => { if (r.status === 'fulfilled' && r.value[0] && !out.includes(r.value[0])) out.push(r.value[0]); });
+  return out;
+}
+// MyMemory is the last resort: best-scored matches only, short phrases only
+async function mmVariants(q, code) {
+  const d = await jget('https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent(code + '|ru') + '&q=' + encodeURIComponent(q), 9000);
+  const src = q.trim().toLowerCase();
+  const cand = (d.matches || []).filter((m) => m && m.translation)
+    .map((m) => ({ t: String(m.translation), s: (Number(m.match) || 0) * 100 + (Number(m.quality) || 0) / 100 }))
+    .sort((a, b) => b.s - a.s).map((m) => m.t);
+  if (d.responseData && d.responseData.translatedText) cand.push(d.responseData.translatedText);
+  const out = [];
+  cand.forEach((t) => { t = t.trim().replace(/[.!]+$/, '').toLowerCase(); if (t !== src && okVariant(t) && !out.includes(t)) out.push(t); });
+  return out.slice(0, 3);
+}
+async function mmFor(word, code) {
+  if (!isSr(code)) return mmVariants(word, code);
+  let r = [], err = null;
+  try { r = await mmVariants(srToCyr(word), code); } catch (e) { err = e; }
+  if (r.length) return r;
+  try { return await mmVariants(srToLat(word), code); } catch (e) { if (err) throw err; return []; }
+}
+// Up to 3 variants: at most 2 from each source in priority order, then the leftovers
+async function googleTr(word, code) {
+  const sl = isSr(code) ? 'sr' : code;
+  const d = await jget('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=' + encodeURIComponent(sl) + '&tl=ru&q=' + encodeURIComponent(word), 9000);
+  const t = (d && d[0] ? d[0] : []).map((x) => x && x[0] ? x[0] : '').join('').trim().replace(/[.!]+$/, '');
+  if (!t || t.toLowerCase() === word.trim().toLowerCase()) return [];
+  return [t.toLowerCase()];
+}
+// One translation source: Google Translate; MyMemory only if Google cannot be reached
+async function fetchTranslations(word, l) {
+  const w = isSr(l.code) ? srToLat(word) : word;
+  try { return await googleTr(w, l.code); } catch (e) {}
+  if (!isSr(l.code)) {
+    const jobs = [l.code === 'en' ? enRussian(word) : Promise.resolve([]), ruWikt(word, l), mmFor(word, l.code)];
+    const res = await Promise.allSettled(jobs);
+    if (res.every((x) => x.status === 'rejected')) throw res[0].reason;
+    for (const x of res) if (x.status === 'fulfilled' && x.value.length) return x.value.slice(0, 1);
+    return [];
+  }
+  const r = await mmVariants(w, 'sr');
+  return r.slice(0, 1);
 }
 
 /* ---------- UI state ---------- */
-const ui = { view: 'langs', langId: null, adding: false, draft: '', confirmId: null, session: null, add: null };
+const ui = { view: 'langs', langId: null, adding: false, confirmId: null, confirmWordId: null, session: null, add: null };
 const app = $('#app');
 
 function go(view, push) {
@@ -352,8 +498,8 @@ function render() {
   if (ui.view === 'langs') app.innerHTML = vLangs();
   else if (ui.view === 'modes') app.innerHTML = vModes();
   else if (ui.view === 'add') { app.innerHTML = vAdd(); bindAdd(); }
+  else if (ui.view === 'words') app.innerHTML = vWords();
   else if (ui.view === 'cards') app.innerHTML = vCards();
-  if (ui.view === 'langs' && ui.adding) { const i = $('#ln'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
 }
 
 function vLangs() {
@@ -368,11 +514,16 @@ function vLangs() {
         : '<button class="icon-btn" style="width:44px;height:44px" data-act="del-ask" data-id="' + l.id + '" aria-label="Удалить язык ' + esc(l.name) + '">' + I.trash + '</button>') +
       '</div>';
   }).join('');
-  const bottom = ui.adding
-    ? '<div class="panel"><label class="label" for="ln">Название языка</label>' +
-      '<input id="ln" type="text" value="' + esc(ui.draft) + '" placeholder="Например, итальянский" autocomplete="off" autocapitalize="sentences">' +
-      '<div class="btns"><button data-act="add-cancel">Отмена</button><button class="ok" data-act="add-ok">Добавить</button></div></div>'
-    : '<button class="big-btn ghost" data-act="add-start">' + I.plus + ' Добавить язык</button>';
+  let bottom;
+  if (ui.adding) {
+    const have = new Set(S.langs.map((x) => x.code));
+    const avail = LANGS.filter((x) => !have.has(x[1]));
+    bottom = '<div class="panel"><span class="label">Выберите язык</span>' +
+      (avail.length
+        ? '<div class="picker">' + avail.map((x) => '<button class="pick" data-act="pick-lang" data-code="' + x[1] + '"><span class="badge sm">' + x[1].toUpperCase() + '</span><span><span class="row-title">' + esc(x[0]) + '</span><span class="row-sub">' + esc(x[3]) + '</span></span></button>').join('') + '</div>'
+        : '<p class="sub">Все доступные языки уже добавлены.</p>') +
+      '<div class="btns"><button data-act="add-cancel">Отмена</button></div></div>';
+  } else bottom = '<button class="big-btn ghost" data-act="add-start">' + I.plus + ' Добавить язык</button>';
   return '<main class="screen"><header style="display:flex;flex-direction:column;gap:8px;padding-top:16px"><h1>Что учим?</h1><p class="sub">Выберите язык или добавьте новый</p></header>' +
     '<div class="list">' + (rows || '<p class="empty">Языков пока нет. Добавьте первый.</p>') + '</div>' + bottom + '</main>';
 }
@@ -383,11 +534,32 @@ function vModes() {
   return '<main class="screen">' + topBar() +
     '<header style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">' + esc(l.name) + ' · ' + wordsText(n) + '</span><h1>Что делаем?</h1></header>' +
     '<div class="modes">' +
+    '<button class="mode compact" data-act="to-words"><span class="ic">' + I.list + '</span><span><span class="t">Список слов</span><span class="d">По алфавиту, можно удалять</span></span></button>' +
     '<button class="mode primary" data-act="to-add"><span class="ic">' + I.plus + '</span><span><span class="t">Добавить новое слово</span><span class="d">Подсказки, транскрипция, перевод</span></span></button>' +
     '<div class="label group-label">Учить карточки</div>' +
     '<button class="mode" data-act="start" data-mode="ru"><span class="ic">RU</span><span><span class="t">Русские карточки</span><span class="d">Видите русское слово, вспоминаете перевод</span></span></button>' +
     '<button class="mode" data-act="start" data-mode="fl"><span class="ic">' + esc(l.badge) + '</span><span><span class="t">Карточки: ' + esc(l.name.toLowerCase()) + '</span><span class="d">Видите слово, вспоминаете значение</span></span></button>' +
     '</div></main>';
+}
+
+function vWords() {
+  const l = langById(ui.langId); if (!l) return vLangs();
+  const col = new Intl.Collator(isSr(l.code) ? 'sr-Latn' : (l.code || 'ru'), { sensitivity: 'base' });
+  const list = wordsOf(l.id).slice().sort((a, b) => col.compare(a.word, b.word));
+  let prev = null;
+  const rows = list.map((w) => {
+    const letter = w.word.charAt(0).toUpperCase();
+    const head = (prev === null || col.compare(prev, letter) !== 0) ? '<div class="letter">' + esc(letter) + '</div>' : '';
+    prev = letter;
+    const conf = ui.confirmWordId === w.id;
+    return head + '<div class="wrow"><span class="w"><span class="wt">' + esc(w.word) + (w.ipa ? ' <span class="ipa">' + esc(w.ipa) + '</span>' : '') + '</span><span class="ws">' + esc(w.ru) + '</span></span>' +
+      (conf
+        ? '<button class="small-danger" data-act="del-word" data-id="' + w.id + '">Удалить</button><button class="small-plain" data-act="del-word-cancel">Отмена</button>'
+        : '<button class="icon-btn" style="width:44px;height:44px" data-act="del-word-ask" data-id="' + w.id + '" aria-label="Удалить слово ' + esc(w.word) + '">' + I.trash + '</button>') + '</div>';
+  }).join('');
+  return '<main class="screen">' + topBar() +
+    '<header style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">' + esc(l.name) + ' · ' + wordsText(list.length) + '</span><h1>Мои слова</h1></header>' +
+    '<div class="list" style="gap:14px">' + (rows || '<p class="empty">Слов пока нет. Добавьте первое.</p>') + '</div></main>';
 }
 
 function vAdd() {
@@ -397,13 +569,13 @@ function vAdd() {
     '<h1 style="font-size:28px">Новое слово</h1>' +
     '<div class="scroll">' +
     '<div class="field"><label class="label" for="w">Слово · ' + esc(l.name) + '</label>' +
-    '<input id="w" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"' + (l.code ? ' lang="' + esc(l.code) + '"' : '') + '>' +
+    '<input id="w" type="text" placeholder="Введите слово" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"' + (l.code ? ' lang="' + esc(l.code) + '"' : '') + '>' +
     '<div id="sugg" class="sugg" hidden></div></div>' +
     '<button class="big-btn ghost" id="find" data-act="find" style="min-height:52px;font-size:16px">Найти транскрипцию и перевод</button>' +
     '<div id="status" class="status" aria-live="polite">' + (l.code ? '' : 'Для этого языка нет подсказок. Заполните поля вручную.') + '</div>' +
-    '<div class="field"><label class="label" id="l-ipa" for="f-ipa">Транскрипция</label><input id="f-ipa" class="ipa" type="text" autocomplete="off" placeholder="[bɔ̃.ʒuʁ]"></div>' +
-    '<div class="field"><label class="label" for="f-say">Произношение по-русски</label><input id="f-say" type="text" autocomplete="off" placeholder="бонжур"></div>' +
-    '<div class="field"><label class="label" for="f-ru">Перевод</label><input id="f-ru" type="text" autocomplete="off" placeholder="здравствуйте"></div>' +
+    '<div class="field"><label class="label" id="l-ipa" for="f-ipa">Транскрипция</label><input id="f-ipa" class="ipa" type="text" autocomplete="off" placeholder="Появится после поиска"></div>' +
+    '<div class="field"><label class="label" for="f-say">Произношение по-русски · необязательно</label><input id="f-say" type="text" autocomplete="off" placeholder="Необязательно"></div>' +
+    '<div class="field"><label class="label" for="f-ru">Перевод</label><input id="f-ru" type="text" autocomplete="off" placeholder="Появится после поиска"><div id="variants" class="chips" hidden></div></div>' +
     '</div>' +
     '<button class="big-btn primary" data-act="save-word">Сохранить слово</button></main>';
 }
@@ -433,15 +605,9 @@ function vCards() {
   const n = w.shown || 0;
   let face;
   const cls = (t) => 'big' + (t.length > 14 ? ' long' : '');
-  if (s.mode === 'ru') {
-    face = s.flipped
-      ? '<span class="' + cls(w.word) + '">' + esc(w.word) + '</span>' + (w.ipa ? '<span class="tr ipa">' + esc(w.ipa) + '</span>' : '') + (w.say ? '<span class="say">' + esc(w.say) + '</span>' : '')
-      : '<span class="' + cls(w.ru) + '">' + esc(w.ru) + '</span>';
-  } else {
-    face = s.flipped
-      ? '<span class="' + cls(w.ru) + '">' + esc(w.ru) + '</span>' + (w.ipa ? '<span class="tr ipa">' + esc(w.ipa) + '</span>' : '') + (w.say ? '<span class="say">' + esc(w.say) + '</span>' : '')
-      : '<span class="' + cls(w.word) + '">' + esc(w.word) + '</span>';
-  }
+  const back = (main) => '<span class="' + cls(main) + '">' + esc(main) + '</span>' + (w.ipa ? '<span class="tr ipa">' + esc(w.ipa) + '</span>' : '') + (w.say ? '<span class="say">' + esc(w.say) + '</span>' : '');
+  if (s.mode === 'ru') face = s.flipped ? back(w.word) : '<span class="' + cls(w.ru) + '">' + esc(w.ru) + '</span>';
+  else face = s.flipped ? back(w.ru) : '<span class="' + cls(w.word) + '">' + esc(w.word) + '</span>';
   return '<main class="screen">' +
     '<div class="top"><button class="icon-btn" data-act="back" aria-label="Назад к режимам">' + I.back + '</button><button class="pill-btn" data-act="finish">Закончить</button></div>' +
     '<div class="counter">Показано ' + n + ' ' + plural(n, 'раз', 'раза', 'раз') + ' за всё время</div>' +
@@ -463,7 +629,7 @@ function showCurrent() {
 }
 function reshuffle(avoidId) {
   const ids = wordsOf(ui.langId).filter((w) => !w.learned).map((w) => w.id);
-  let q = shuffle(ids);
+  const q = shuffle(ids);
   if (q.length > 1 && q[0] === avoidId) q.push(q.shift());
   ui.session.queue = q; ui.session.pos = 0;
 }
@@ -477,28 +643,45 @@ function nextCard(afterRemoval) {
 }
 
 /* ---------- add word ---------- */
+const OFFLINE_MSG = 'Нет связи со словарём. Транскрипцию добавить нельзя. Введите перевод. Произношение по желанию.';
 let suggTok = 0, suggTimer = null, sayDirty = false;
-const OFFLINE_MSG = 'Нет связи со словарём. Транскрипцию добавить нельзя. Заполните перевод и произношение.';
+function setStatus(msg, err) { const s = $('#status'); if (s) { s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); } }
+// With no connection to the dictionary the transcription field is locked; translation and reading stay editable
 function setOffline(off) {
   const i = $('#f-ipa'); if (!i) return;
   ui.add = ui.add || {}; ui.add.offline = off;
   i.disabled = off;
   if (off) i.value = '';
-  i.placeholder = off ? 'Недоступно' : '[bɔ̃.ʒuʁ]';
+  i.placeholder = off ? 'Недоступно' : 'Появится после поиска';
   $('#l-ipa').textContent = off ? 'Транскрипция · недоступна без связи' : 'Транскрипция';
 }
-window.addEventListener('offline', () => { if (ui.view === 'add' && $('#f-ipa') && langById(ui.langId).code) { setOffline(true); setStatus(OFFLINE_MSG, true); } });
-window.addEventListener('online', () => { if (ui.view === 'add' && $('#f-ipa')) { setOffline(false); setStatus(''); } });
-function setStatus(msg, err) { const s = $('#status'); if (s) { s.textContent = msg; s.className = 'status' + (err ? ' err' : ''); } }
+window.addEventListener('offline', () => {
+  if (ui.view === 'add' && $('#f-ipa') && langById(ui.langId).code) { setOffline(true); setStatus(OFFLINE_MSG, true); }
+});
+window.addEventListener('online', () => {
+  if (ui.view === 'add' && $('#f-ipa')) { setOffline(false); setStatus(''); }
+});
+function markVariant() {
+  const v = ($('#f-ru') ? $('#f-ru').value : '').trim().toLowerCase();
+  document.querySelectorAll('#variants .chip').forEach((c) => c.classList.toggle('sel', c.dataset.v.toLowerCase() === v));
+}
+function showVariants(list) {
+  const box = $('#variants'); if (!box) return;
+  if (list.length < 2) { box.hidden = true; box.innerHTML = ''; return; }
+  box.innerHTML = list.map((t) => '<button class="chip" data-act="variant" data-v="' + esc(t) + '">' + esc(t) + '</button>').join('');
+  box.hidden = false; markVariant();
+}
 function bindAdd() {
   sayDirty = false; suggTok++; ui.add = { offline: false };
   const l = langById(ui.langId);
   const w = $('#w');
   if (!navigator.onLine && l.code) { setOffline(true); setStatus(OFFLINE_MSG, true); }
   w.addEventListener('input', () => {
+    if (isSr(l.code) && hasCyr(w.value)) w.value = srToLat(w.value); // Serbian is entered and stored in Latin
     clearTimeout(suggTimer);
     const q = w.value.trim();
     const box = $('#sugg');
+    if (!q && ui.add && ui.add.auto) { ['#f-ipa', '#f-say', '#f-ru'].forEach((id) => { if (!$(id).disabled) $(id).value = ''; }); showVariants([]); sayDirty = false; ui.add.auto = false; setStatus(''); }
     if (q.length < 2) { box.hidden = true; box.innerHTML = ''; return; }
     suggTimer = setTimeout(async () => {
       const tok = ++suggTok;
@@ -507,7 +690,7 @@ function bindAdd() {
         if (tok !== suggTok || !$('#sugg')) return;
         if (ui.add && ui.add.offline) { setOffline(false); setStatus(''); }
         if (!list.length) { box.hidden = true; return; }
-        box.innerHTML = list.map((t, i) => {
+        box.innerHTML = list.map((t) => {
           const pre = t.toLowerCase().startsWith(q.toLowerCase()) ? q.length : 0;
           return '<button data-act="pick" data-w="' + esc(t) + '"><b>' + esc(t.slice(0, pre)) + '</b>' + esc(t.slice(pre)) + '</button>';
         }).join('');
@@ -523,19 +706,28 @@ function bindAdd() {
   w.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); lookup(); } });
   $('#f-ipa').addEventListener('input', (e) => { if (!sayDirty) $('#f-say').value = ipaToRu(e.target.value); });
   $('#f-say').addEventListener('input', () => { sayDirty = true; });
+  $('#f-ru').addEventListener('input', markVariant);
 }
 async function lookup() {
   const l = langById(ui.langId);
-  const word = $('#w').value.trim();
+  let word = $('#w').value.trim();
+  if (isSr(l.code)) { word = srToLat(word); $('#w').value = word; }
   if (!word) { setStatus('Введите слово.', true); return; }
-  suggTok++; $('#sugg').hidden = true;
+  suggTok++; $('#sugg').hidden = true; showVariants([]);
   if (!l.code) { setStatus('Для этого языка нет подсказок. Заполните поля вручную.', true); return; }
   if (!navigator.onLine) { setOffline(true); setStatus(OFFLINE_MSG, true); return; }
   const btn = $('#find'); btn.disabled = true;
   setStatus('Ищу транскрипцию и перевод…');
-  const [ipa, tr] = await Promise.allSettled([fetchIPA(word, l.eng), fetchTranslation(word, l.code)]);
+  const [ipa, tr] = await Promise.allSettled([fetchIPA(word, l.eng, l.code), fetchTranslations(word, l)]);
   if (ui.view !== 'add' || !$('#w')) return;
   btn.disabled = false;
+  if (ipa.status === 'rejected' && tr.status === 'rejected') {
+    setOffline(true); setStatus(OFFLINE_MSG, true);
+    if (isSr(l.code) && !sayDirty) $('#f-say').value = srReadingRu(word);
+    return;
+  }
+  if (ui.add && ui.add.offline) setOffline(false);
+  if (ui.add) ui.add.auto = true;
   const miss = [];
   if (ipa.status === 'fulfilled' && ipa.value) {
     $('#f-ipa').value = ipa.value;
@@ -545,46 +737,43 @@ async function lookup() {
     // Serbian is spelled as it sounds: the reading can come from the word itself
     if (isSr(l.code) && !sayDirty) $('#f-say').value = srReadingRu(word);
   }
-  if (tr.status === 'fulfilled' && tr.value) $('#f-ru').value = tr.value;
+  const vars = tr.status === 'fulfilled' ? tr.value : [];
+  if (vars.length) { $('#f-ru').value = vars[0]; showVariants(vars); }
   else miss.push('перевод');
-  if (ipa.status === 'rejected' && tr.status === 'rejected') { setOffline(true); setStatus(OFFLINE_MSG, true); return; }
-  if (ui.add && ui.add.offline) setOffline(false);
-  if (!miss.length) setStatus('Готово. Проверьте и сохраните.');
+  if (!miss.length) setStatus(vars.length > 1 ? 'Готово. Есть другие варианты перевода.' : 'Готово. Проверьте и сохраните.');
   else setStatus('Не нашёл ' + miss.join(' и ') + '. Допишите вручную.', true);
 }
 function saveWord() {
   const l = langById(ui.langId);
-  const word = $('#w').value.trim(), ru = $('#f-ru').value.trim();
+  let word = $('#w').value.trim();
+  if (isSr(l.code)) word = srToLat(word);
+  const ru = $('#f-ru').value.trim();
   if (!word) { setStatus('Введите слово.', true); $('#w').focus(); return; }
   if (!ru) { setStatus('Добавьте перевод.', true); $('#f-ru').focus(); return; }
   if (wordsOf(l.id).some((x) => x.word.toLowerCase() === word.toLowerCase())) { setStatus('Это слово уже есть в словаре.', true); return; }
   S.words.push({ id: S.nextId++, langId: l.id, word, ipa: $('#f-ipa').value.trim(), say: $('#f-say').value.trim(), ru, shown: 0, learned: false });
   save();
   toast('Слово добавлено');
+  // close the screen and go back to where the user came from
   if (history.state && history.state.v === 'add') history.back();
   else go('modes', false);
 }
 
 /* ---------- events ---------- */
-app.addEventListener('input', (e) => { if (e.target.id === 'ln') ui.draft = e.target.value; });
-app.addEventListener('keydown', (e) => { if (e.target.id === 'ln' && e.key === 'Enter') { e.preventDefault(); addLang(); } });
-function addLang() {
-  const name = ui.draft.trim();
-  if (!name) { const i = $('#ln'); if (i) i.focus(); return; }
-  const cap = name.charAt(0).toUpperCase() + name.slice(1);
-  const info = langInfo(cap);
+function addLangByCode(code) {
+  const m = langByCode(code); if (!m || S.langs.some((x) => x.code === code)) return;
   const id = S.nextId++;
-  S.langs.push({ id, name: cap, code: info ? info[0] : '', eng: info ? info[1] : '', badge: (info ? info[0] : cap.slice(0, 2)).toUpperCase(), color: COLORS[id % COLORS.length] });
-  save(); ui.adding = false; ui.draft = ''; render();
-  if (!info) toast('Подсказки словаря для этого языка недоступны');
+  S.langs.push({ id, name: m[0], code: m[1], eng: m[2], badge: m[1].toUpperCase(), color: COLORS[id % COLORS.length] });
+  save(); ui.adding = false; render();
+  toast('Язык добавлен');
 }
 app.addEventListener('click', (e) => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const act = b.dataset.act, id = Number(b.dataset.id);
   switch (act) {
-    case 'add-start': ui.adding = true; ui.draft = ''; render(); break;
-    case 'add-cancel': ui.adding = false; ui.draft = ''; render(); break;
-    case 'add-ok': addLang(); break;
+    case 'add-start': ui.adding = true; render(); break;
+    case 'add-cancel': ui.adding = false; render(); break;
+    case 'pick-lang': addLangByCode(b.dataset.code); break;
     case 'del-ask': ui.confirmId = id; render(); break;
     case 'del-cancel': ui.confirmId = null; render(); break;
     case 'del-lang':
@@ -592,6 +781,10 @@ app.addEventListener('click', (e) => {
       ui.confirmId = null; save(); render(); break;
     case 'open-lang': ui.langId = id; go('modes'); break;
     case 'to-add': go('add', ui.view !== 'add'); break;
+    case 'to-words': ui.confirmWordId = null; go('words'); break;
+    case 'del-word-ask': ui.confirmWordId = id; render(); break;
+    case 'del-word-cancel': ui.confirmWordId = null; render(); break;
+    case 'del-word': S.words = S.words.filter((w) => w.id !== id); ui.confirmWordId = null; save(); render(); toast('Слово удалено'); break;
     case 'start': startSession(b.dataset.mode); break;
     case 'back':
       if (ui.view === 'cards') { ui.session = null; }
@@ -600,6 +793,7 @@ app.addEventListener('click', (e) => {
       break;
     case 'pick': $('#w').value = b.dataset.w; lookup(); break;
     case 'find': lookup(); break;
+    case 'variant': $('#f-ru').value = b.dataset.v; markVariant(); break;
     case 'save-word': saveWord(); break;
     case 'flip':
       if (!ui.session.flipped) ui.session.flipped = true; else nextCard(false);
@@ -615,6 +809,7 @@ app.addEventListener('click', (e) => {
   }
 });
 
+migrate();
 render();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
